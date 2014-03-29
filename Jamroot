@@ -1,0 +1,14 @@
+import os ;
+local HOME = [ os.environ HOME ] ;
+
+use-project /libea : ../ealib/libea ;
+
+exe all-ones :
+    src/all_ones.cpp
+    /libea//libea
+    /libea//libea_runner
+    /libmkv//libmkv
+    : <include>./include <link>static
+    ;
+
+install dist : all-ones : <location>$(HOME)/bin ;
