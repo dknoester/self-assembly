@@ -1,6 +1,6 @@
-/* template.h
+/* ca.h
  *
- * This file is part of Template.
+ * This file is part of Self-Assembly.
  *
  * Copyright 2014 David B. Knoester.
  *

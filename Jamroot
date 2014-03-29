@@ -3,7 +3,7 @@ local HOME = [ os.environ HOME ] ;
 
 use-project /libea : ../ealib/libea ;
 
-exe all-ones :
+exe self-assembly-ca-1d :
     src/all_ones.cpp
     /libea//libea
     /libea//libea_runner
@@ -11,4 +11,4 @@ exe all-ones :
     : <include>./include <link>static
     ;
 
-install dist : all-ones : <location>$(HOME)/bin ;
+install dist : self-assembly-ca-1d : <location>$(HOME)/bin ;
