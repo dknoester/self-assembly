@@ -17,8 +17,16 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef _TEMPLATE_H_
-#define _TEMPLATE_H_
+#ifndef _CA_H_
+#define _CA_H_
 
+#include <ea/meta_data.h>
+
+enum objective_type { DENSITY, SYNC };
+
+LIBEA_MD_DECL(CA_RADIUS, "self_assembly.ca.radius", int);
+LIBEA_MD_DECL(CA_N, "self_assembly.ca.n", int);
+LIBEA_MD_DECL(CA_SAMPLES, "self_assembly.ca.samples", int);
+LIBEA_MD_DECL(CA_OBJECTIVE, "self_assembly.ca.objective", int);
 
 #endif

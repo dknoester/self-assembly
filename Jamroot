@@ -3,12 +3,12 @@ local HOME = [ os.environ HOME ] ;
 
 use-project /libea : ../ealib/libea ;
 
-exe self-assembly-ca-1d :
-    src/all_ones.cpp
+exe self-assembly-ca-1d-ga :
+    src/ca_1d_ga.cpp
     /libea//libea
     /libea//libea_runner
     /libmkv//libmkv
     : <include>./include <link>static
     ;
 
-install dist : self-assembly-ca-1d : <location>$(HOME)/bin ;
+install dist : self-assembly-ca-1d-ga : <location>$(HOME)/bin ;

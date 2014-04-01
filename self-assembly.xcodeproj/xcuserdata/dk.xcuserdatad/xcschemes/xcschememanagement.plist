@@ -7,9 +7,14 @@
 		<key>all.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>1</integer>
+			<integer>41</integer>
 		</dict>
-		<key>self-assembly-ca-1d.xcscheme</key>
+		<key>self-assembly-ca-1d-ga.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>43</integer>
+		</dict>
+		<key>self-assembly-ca-1d-mkv.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>42</integer>
@@ -108,6 +113,11 @@
 			<true/>
 		</dict>
 		<key>42841CAB15B1947A00AB18BE</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>42A170D618E834F500C3A248</key>
 		<dict>
 			<key>primary</key>
 			<true/>
