@@ -7,7 +7,6 @@ exe self-assembly-ca-1d-ga :
     src/ca_1d_ga.cpp
     /libea//libea
     /libea//libea_runner
-    /libmkv//libmkv
     : <include>./include <link>static
     ;
 
