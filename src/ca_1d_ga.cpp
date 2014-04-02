@@ -25,6 +25,7 @@
 #include <ea/generational_models/steady_state.h>
 #include <ea/selection/rank.h>
 #include <ea/selection/random.h>
+#include <ea/selection/proportionate.h>
 #include <ea/representations/bitstring.h>
 #include <ea/fitness_functions/all_ones.h>
 #include <ea/cmdline_interface.h>
@@ -128,7 +129,7 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
             // calculate fitness:
             switch(static_cast<objective_type>(get<CA_OBJECTIVE>(ea))) {
                 case DENSITY: {
-                    w += algorithm::all(S_tplus1.begin(), S_tplus1.end(), bind2nd(equal_to<int>(), _C[ic]));
+                    w += algorithm::all(S_t.begin(), S_t.end(), bind2nd(equal_to<int>(), _C[ic]));
                     break;
                 }
                 case SYNC: {
@@ -139,7 +140,7 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
                 }
             }
         }
-        return w / get<CA_SAMPLES>(ea);
+        return w / static_cast<double>(get<CA_SAMPLES>(ea));
     }
 };
 
@@ -153,7 +154,7 @@ typedef evolutionary_algorithm
 , ancestors::flat_bitstring
 , mutation::operators::per_site<mutation::site::bitflip>
 , recombination::single_point_crossover
-, generational_models::steady_state<selection::random<with_replacementS>, selection::rank< > >
+, generational_models::steady_state<selection::random<with_replacementS>, selection::rank>
 > ea_type;
 
 
@@ -174,6 +175,7 @@ public:
         add_option<CHECKPOINT_PREFIX>(this);
         add_option<RNG_SEED>(this);
         add_option<RECORDING_PERIOD>(this);
+        add_option<FF_INITIALIZATION_PERIOD>(this);
         
         add_option<CA_N>(this);
         add_option<CA_SAMPLES>(this);

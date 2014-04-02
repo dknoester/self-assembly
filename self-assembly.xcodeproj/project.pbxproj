@@ -61,6 +61,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4228EF8F18EB95D500F81F81 /* ca_1d_mkv.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = ca_1d_mkv.cfg; sourceTree = "<group>"; };
 		42441B3E15862E1B009863BE /* Jamroot */ = {isa = PBXFileReference; lastKnownFileType = text; path = Jamroot; sourceTree = "<group>"; };
 		42706B11166AF51C003FB2E3 /* template.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = template.xcconfig; sourceTree = "<group>"; };
 		4281FF0216C4929F0066610C /* ca_1d_ga.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = ca_1d_ga.cfg; sourceTree = "<group>"; };
@@ -141,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				4281FF0216C4929F0066610C /* ca_1d_ga.cfg */,
+				4228EF8F18EB95D500F81F81 /* ca_1d_mkv.cfg */,
 				42706B11166AF51C003FB2E3 /* template.xcconfig */,
 			);
 			path = etc;

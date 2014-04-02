@@ -129,7 +129,7 @@ struct mkv_cellular_automata : fitness_function<unary_fitness<double>, constantS
             // calculate fitness:
             switch(static_cast<objective_type>(get<CA_OBJECTIVE>(ea))) {
                 case DENSITY: {
-                    w += algorithm::all(S_tplus1.begin(), S_tplus1.end(), bind2nd(equal_to<int>(), _C[ic]));
+                    w += algorithm::all(S_t.begin(), S_t.end(), bind2nd(equal_to<int>(), _C[ic]));
                     break;
                 }
                 case SYNC: {
@@ -149,7 +149,7 @@ struct mkv_cellular_automata : fitness_function<unary_fitness<double>, constantS
 typedef markov_evolution_algorithm
 < mkv_cellular_automata
 , recombination::asexual
-, generational_models::steady_state<selection::rank< >, selection::random<with_replacementS> >
+, generational_models::steady_state<selection::random<with_replacementS>, selection::rank< > >
 > ea_type;
 
 /*! Define the EA's command-line interface.
@@ -167,6 +167,7 @@ public:
         add_option<CHECKPOINT_PREFIX>(this);
         add_option<RNG_SEED>(this);
         add_option<RECORDING_PERIOD>(this);
+        add_option<FF_INITIALIZATION_PERIOD>(this);
         
         add_option<CA_N>(this);
         add_option<CA_SAMPLES>(this);
@@ -178,6 +179,12 @@ public:
     virtual void gather_events(EA& ea) {
         add_event<reinitialize_fitness_function>(ea);
         add_event<datafiles::fitness_dat>(ea);
+    }
+    
+    //! Called before initialization (good place to calculate config options).
+    virtual void before_initialization(EA& ea) {
+        put<MKV_INPUT_N>(get<CA_RADIUS>(ea)*2+1, ea);
+        put<MKV_OUTPUT_N>(1, ea);
     }
 };
 
