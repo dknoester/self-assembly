@@ -153,7 +153,7 @@ typedef evolutionary_algorithm
 , ancestors::flat_bitstring
 , mutation::operators::per_site<mutation::site::bitflip>
 , recombination::single_point_crossover
-, generational_models::steady_state<selection::rank< >, selection::random<with_replacementS> >
+, generational_models::steady_state<selection::random<with_replacementS>, selection::rank< > >
 > ea_type;
 
 
