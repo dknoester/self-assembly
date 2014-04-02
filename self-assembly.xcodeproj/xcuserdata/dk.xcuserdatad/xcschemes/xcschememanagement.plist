@@ -9,15 +9,15 @@
 			<key>orderHint</key>
 			<integer>41</integer>
 		</dict>
+		<key>self-assembly-ca-1d-fsm.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>42</integer>
+		</dict>
 		<key>self-assembly-ca-1d-ga.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>43</integer>
-		</dict>
-		<key>self-assembly-ca-1d-mkv.xcscheme</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>42</integer>
 		</dict>
 	</dict>
 	<key>SuppressBuildableAutocreation</key>

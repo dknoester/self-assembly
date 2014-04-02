@@ -21,7 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		42A1609316B82FDB0007755C /* ca_1d_mkv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F4EE6916AEE845000123A4 /* ca_1d_mkv.cpp */; };
+		42A1609316B82FDB0007755C /* ca_1d_fsm.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 42F4EE6916AEE845000123A4 /* ca_1d_fsm.cpp */; };
 		42A170D318E6EEB200C3A248 /* libea.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 42A170D218E6EEB200C3A248 /* libea.a */; };
 		42A170DA18E834F500C3A248 /* libea.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 42A170D218E6EEB200C3A248 /* libea.a */; };
 		42A170DB18E834F500C3A248 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 42B7A9B616305C4B00BDBA8A /* libz.dylib */; };
@@ -72,7 +72,7 @@
 		42B7A9B616305C4B00BDBA8A /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		42C0BD14166129C400009440 /* analysis.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = analysis.h; sourceTree = "<group>"; };
 		42F4EE6616AEE80D000123A4 /* self-assembly-ca-1d-mkv */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "self-assembly-ca-1d-mkv"; sourceTree = BUILT_PRODUCTS_DIR; };
-		42F4EE6916AEE845000123A4 /* ca_1d_mkv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ca_1d_mkv.cpp; sourceTree = "<group>"; };
+		42F4EE6916AEE845000123A4 /* ca_1d_fsm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ca_1d_fsm.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -132,7 +132,7 @@
 			children = (
 				42C0BD14166129C400009440 /* analysis.h */,
 				42908C4916BEA43A00712DA8 /* ca.h */,
-				42F4EE6916AEE845000123A4 /* ca_1d_mkv.cpp */,
+				42F4EE6916AEE845000123A4 /* ca_1d_fsm.cpp */,
 				42A170D418E834EA00C3A248 /* ca_1d_ga.cpp */,
 			);
 			path = src;
@@ -168,9 +168,9 @@
 			productReference = 42A170E018E834F500C3A248 /* self-assembly-ca-1d-ga */;
 			productType = "com.apple.product-type.tool";
 		};
-		42F4EE5B16AEE80D000123A4 /* self-assembly-ca-1d-mkv */ = {
+		42F4EE5B16AEE80D000123A4 /* self-assembly-ca-1d-fsm */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 42F4EE6316AEE80D000123A4 /* Build configuration list for PBXNativeTarget "self-assembly-ca-1d-mkv" */;
+			buildConfigurationList = 42F4EE6316AEE80D000123A4 /* Build configuration list for PBXNativeTarget "self-assembly-ca-1d-fsm" */;
 			buildPhases = (
 				42F4EE5C16AEE80D000123A4 /* Sources */,
 				42F4EE5E16AEE80D000123A4 /* Frameworks */,
@@ -180,7 +180,7 @@
 			);
 			dependencies = (
 			);
-			name = "self-assembly-ca-1d-mkv";
+			name = "self-assembly-ca-1d-fsm";
 			productName = "ocr-single";
 			productReference = 42F4EE6616AEE80D000123A4 /* self-assembly-ca-1d-mkv */;
 			productType = "com.apple.product-type.tool";
@@ -206,7 +206,7 @@
 			projectRoot = "";
 			targets = (
 				42720F6F163823AF008C8E63 /* all */,
-				42F4EE5B16AEE80D000123A4 /* self-assembly-ca-1d-mkv */,
+				42F4EE5B16AEE80D000123A4 /* self-assembly-ca-1d-fsm */,
 				42A170D618E834F500C3A248 /* self-assembly-ca-1d-ga */,
 			);
 		};
@@ -225,7 +225,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42A1609316B82FDB0007755C /* ca_1d_mkv.cpp in Sources */,
+				42A1609316B82FDB0007755C /* ca_1d_fsm.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,7 +234,7 @@
 /* Begin PBXTargetDependency section */
 		42A160C516B87E2F0007755C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 42F4EE5B16AEE80D000123A4 /* self-assembly-ca-1d-mkv */;
+			target = 42F4EE5B16AEE80D000123A4 /* self-assembly-ca-1d-fsm */;
 			targetProxy = 42A160C416B87E2F0007755C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -320,7 +320,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		42F4EE6316AEE80D000123A4 /* Build configuration list for PBXNativeTarget "self-assembly-ca-1d-mkv" */ = {
+		42F4EE6316AEE80D000123A4 /* Build configuration list for PBXNativeTarget "self-assembly-ca-1d-fsm" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				42F4EE6416AEE80D000123A4 /* Debug */,

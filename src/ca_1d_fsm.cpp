@@ -117,7 +117,7 @@ struct mkv_cellular_automata : fitness_function<unary_fitness<double>, constantS
                 for(int i=0; i<n; ++i) {
                     // update the network:
                     ca[i].update(state_vector_offset_type(S_t, i-r));
-                    S_tplus1[i] = ca[i].output(i);
+                    S_tplus1[i] = ca[i].output(0);
                     changed = changed || (S_t[i] != S_tplus1[i]);
                 }
                 std::swap(S_t, S_tplus1);
@@ -149,7 +149,7 @@ struct mkv_cellular_automata : fitness_function<unary_fitness<double>, constantS
 typedef markov_evolution_algorithm
 < mkv_cellular_automata
 , recombination::asexual
-, generational_models::steady_state<selection::random<with_replacementS>, selection::rank< > >
+, generational_models::steady_state<selection::random<with_replacementS>, selection::rank>
 > ea_type;
 
 /*! Define the EA's command-line interface.
@@ -183,8 +183,12 @@ public:
     
     //! Called before initialization (good place to calculate config options).
     virtual void before_initialization(EA& ea) {
+        using namespace ealib::mkv;
+
         put<MKV_INPUT_N>(get<CA_RADIUS>(ea)*2+1, ea);
         put<MKV_OUTPUT_N>(1, ea);
+        ea.config().disable(PROBABILISTIC);
+        ea.config().disable(ADAPTIVE);
     }
 };
 
