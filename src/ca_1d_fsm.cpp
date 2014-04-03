@@ -19,6 +19,7 @@
  */
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <vector>
 
 #include <ea/evolutionary_algorithm.h>
@@ -187,8 +188,17 @@ public:
 
         put<MKV_INPUT_N>(get<CA_RADIUS>(ea)*2+1, ea);
         put<MKV_OUTPUT_N>(1, ea);
-        ea.config().disable(PROBABILISTIC);
-        ea.config().disable(ADAPTIVE);
+        
+        const std::string& gates = get<MKV_GATE_TYPES>(ea);
+        if(!boost::algorithm::icontains(gates, "logic")) {
+            ea.config().disable(LOGIC);
+        }
+        if(!boost::algorithm::icontains(gates, "probabilistic")) {
+            ea.config().disable(PROBABILISTIC);
+        }
+        if(!boost::algorithm::icontains(gates, "adaptive")) {
+            ea.config().disable(ADAPTIVE);
+        }
     }
 };
 
