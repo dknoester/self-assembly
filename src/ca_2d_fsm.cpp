@@ -202,7 +202,7 @@ public:
     //! Called before initialization (good place to calculate config options).
     virtual void before_initialization(EA& ea) {
         using namespace ealib::mkv;
-        put<MKV_INPUT_N>(get<CA_RADIUS>(ea)*2+1 << 1, ea); // lshift to square the # of inputs.
+        put<MKV_INPUT_N>((get<CA_RADIUS>(ea)*2+1) << 1, ea); // lshift to square the # of inputs.
         put<MKV_OUTPUT_N>(1, ea);
         
         const std::string& gates = get<MKV_GATE_TYPES>(ea);
