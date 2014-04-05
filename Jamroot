@@ -17,4 +17,11 @@ exe self-assembly-ca-1d-fsm :
     : <include>./include <link>static
     ;
 
-install dist : self-assembly-ca-1d-ga self-assembly-ca-1d-fsm : <location>$(HOME)/bin ;
+exe self-assembly-ca-2d-fsm :
+    src/ca_2d_fsm.cpp
+    /libea//libea
+    /libea//libea_runner
+    : <include>./include <link>static
+    ;
+
+install dist : self-assembly-ca-1d-ga self-assembly-ca-1d-fsm self-assembly-ca-2d-fsm : <location>$(HOME)/bin ;
