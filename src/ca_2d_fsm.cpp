@@ -146,7 +146,7 @@ struct mkv_cellular_automata : fitness_function<unary_fitness<double>, constantS
             // calculate fitness:
             switch(static_cast<objective_type>(get<CA_OBJECTIVE>(ea))) {
                 case DENSITY: {
-//                    w += algorithm::all(S_t.begin(), S_t.end(), bind2nd(equal_to<int>(), _C[ic]));
+                    w += algorithm::all(S_t.begin(), S_t.end(), bind2nd(equal_to<int>(), _C[ic]));
                     break;
                 }
                 case SYNC: {
