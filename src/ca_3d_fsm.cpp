@@ -44,9 +44,9 @@ struct mkv_cellular_automata : fitness_function<unary_fitness<double>, constantS
     typedef std::vector<int> ivector_type;
     typedef boost::numeric::ublas::matrix<int> matrix_type;
     typedef boost::numeric::ublas::matrix_row<matrix_type> row_type;
-    typedef torus<int> state_container_type;
-    typedef torus_offset<state_container_type> state_offset_type;
-    typedef adaptor_2d<state_offset_type> adaptor_type;
+    typedef torus3<int> state_container_type;
+    typedef offset_torus3<state_container_type> state_offset_type;
+    typedef adaptor_torus3<state_offset_type> adaptor_type;
     
     matrix_type _IC; //!< Matrix of initial conditions.
     ivector_type _C; //!< Consensus bit per initial condition.
@@ -56,7 +56,7 @@ struct mkv_cellular_automata : fitness_function<unary_fitness<double>, constantS
     void initialize(RNG& rng, EA& ea) {
         using namespace std;
         
-        _IC.resize(get<CA_SAMPLES>(ea), get<CA_M>(ea) * get<CA_N>(ea)); // initial conditions
+        _IC.resize(get<CA_SAMPLES>(ea), get<CA_M>(ea) * get<CA_N>(ea) * get<CA_P>(ea)); // initial conditions
         _C.resize(get<CA_SAMPLES>(ea)); // consensus bit
         
         // 1/2 above pc:
@@ -96,19 +96,19 @@ struct mkv_cellular_automata : fitness_function<unary_fitness<double>, constantS
         
         const int m = get<CA_M>(ea);
         const int n = get<CA_N>(ea);
+        const int p = get<CA_P>(ea);
         const int r = get<CA_RADIUS>(ea);
         
         // build all the phenotypes, reset their rngs:
-        std::vector<typename EA::phenotype_type> ca(m*n, ealib::phenotype(ind, ea));
+        std::vector<typename EA::phenotype_type> ca(m*n*p, ealib::phenotype(ind, ea));
         for(std::size_t i=0; i<ca.size(); ++i) {
             ca[i].reset(rng.seed());
         }
         
-        state_container_type S_t(m, n, 0);
-        state_container_type S_tplus1(m, n, 0);
+        state_container_type S_t(m, n, p, 0);
+        state_container_type S_tplus1(m, n, p, 0);
         state_container_type* pt=&S_t;
         state_container_type* ptp1=&S_tplus1;
-        
         
         // for each initial condition:
         for(std::size_t ic=0; ic<_IC.size1(); ++ic) {
@@ -127,18 +127,20 @@ struct mkv_cellular_automata : fitness_function<unary_fitness<double>, constantS
                 // 3 4 5
                 // 6 7 8
                 
-                for(int i=0; i<m; ++i) {
-                    for(int j=0; j<n; ++j) {
-                        // which is offset by the radius of an agent's neighborhood...
-                        state_offset_type off(*pt, i-r, j-r);
-                        // and the state of agents in that neighborhood are accessed via an indexing adaptor:
-                        ca[n*i+j].update(adaptor_type(off, 2*r+1, 2*r+1));
-
-                        (*ptp1)(i,j) = ca[n*i+j].output(0);
-                        changed = changed || ((*pt)(i,j) != (*ptp1)(i,j));
+                for(int k=0; k<p; ++k) { // page
+                    for(int i=0; i<m; ++i) { // row
+                        for(int j=0; j<n; ++j) { // col
+                            // which is offset by the radius of an agent's neighborhood...
+                            state_offset_type off(*pt, i-r, j-r, k-r);
+                            // and the state of agents in that neighborhood are accessed via an indexing adaptor:
+                            std::size_t x=k*m*n + n*i + j;
+                            ca[x].update(adaptor_type(off, 2*r+1, 2*r+1, 2*r+1));
+                            
+                            (*ptp1)(i,j,k) = ca[x].output(0);
+                            changed = changed || ((*pt)(i,j,k) != (*ptp1)(i,j,k));
+                        }
                     }
                 }
-                
                 std::swap(pt, ptp1);
                 if(!changed) {
                     break;
@@ -190,6 +192,7 @@ public:
         
         add_option<CA_M>(this);
         add_option<CA_N>(this);
+        add_option<CA_P>(this);
         add_option<CA_SAMPLES>(this);
         add_option<CA_OBJECTIVE>(this);
         add_option<CA_RADIUS>(this);
@@ -204,7 +207,9 @@ public:
     //! Called before initialization (good place to calculate config options).
     virtual void before_initialization(EA& ea) {
         using namespace ealib::mkv;
-        put<MKV_INPUT_N>((get<CA_RADIUS>(ea)*2+1) << 1, ea); // lshift to square the # of inputs.
+        int n = get<CA_RADIUS>(ea)*2+1;
+        
+        put<MKV_INPUT_N>(n*n*n, ea); // lshift to square the # of inputs.
         put<MKV_OUTPUT_N>(1, ea);
         
         const std::string& gates = get<MKV_GATE_TYPES>(ea);

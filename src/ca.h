@@ -27,6 +27,7 @@ enum objective_type { DENSITY, SYNC };
 LIBEA_MD_DECL(CA_RADIUS, "self_assembly.ca.radius", int);
 LIBEA_MD_DECL(CA_M, "self_assembly.ca.m", int);
 LIBEA_MD_DECL(CA_N, "self_assembly.ca.n", int);
+LIBEA_MD_DECL(CA_P, "self_assembly.ca.p", int);
 LIBEA_MD_DECL(CA_SAMPLES, "self_assembly.ca.samples", int);
 LIBEA_MD_DECL(CA_OBJECTIVE, "self_assembly.ca.objective", int);
 
