@@ -35,11 +35,6 @@ using namespace ealib;
 #include "ca.h"
 #include "analysis.h"
 
-
-/*! 1D MKV-based cellular automata.
- 
- Nomenclature based on Mitchell, Crutchfield, and Das '96.
- */
 struct mkv_cellular_automata : fitness_function<unary_fitness<double>, constantS, stochasticS> {
     typedef std::vector<int> ivector_type;
     typedef boost::numeric::ublas::matrix<int> matrix_type;
@@ -50,47 +45,78 @@ struct mkv_cellular_automata : fitness_function<unary_fitness<double>, constantS
     
     matrix_type _IC; //!< Matrix of initial conditions.
     ivector_type _C; //!< Consensus bit per initial condition.
+
+    struct callback {
+        virtual void new_state(state_container_type& s) = 0;
+    };
+    
+    callback* _cb;
+    
+    //! Reset the callback pointer.
+    void reset_callback(callback* c=0) {
+        _cb = c;
+    }
     
     //! Initialize the fitness function.
     template <typename RNG, typename EA>
     void initialize(RNG& rng, EA& ea) {
         using namespace std;
+        _cb = 0;
         
         _IC.resize(get<CA_SAMPLES>(ea), get<CA_M>(ea) * get<CA_N>(ea) * get<CA_P>(ea)); // initial conditions
         _C.resize(get<CA_SAMPLES>(ea)); // consensus bit
         
-        // 1/2 above pc:
-        for(std::size_t i=0; i<_IC.size1()/2; ++i) {
-            row_type r(_IC,i);
-            std::size_t x=(0.5 + ea.rng().p()/2.0) * r.size();
-            for(std::size_t j=0; j<x; ++j) {
-                r[j] = 1;
+        switch(get<CA_IC>(ea,0)) {
+            case 0: { // uniform density
+                // 1/2 above pc:
+                for(std::size_t i=0; i<_IC.size1()/2; ++i) {
+                    row_type r(_IC,i);
+                    std::size_t x=(0.5 + ea.rng().p()/2.0) * r.size();
+                    for(std::size_t j=0; j<x; ++j) {
+                        r[j] = 1;
+                    }
+                    for(std::size_t j=x; j<r.size(); ++j) {
+                        r[j] = 0;
+                    }
+                    std::random_shuffle(r.begin(), r.end(), ea.rng());
+                    _C[i] = 1;
+                }
+                
+                // 1/2 below pc:
+                for(std::size_t i=_IC.size1()/2; i<_IC.size1(); ++i) {
+                    row_type r(_IC,i);
+                    std::size_t x=(ea.rng().p()/2.0) * r.size();
+                    for(std::size_t j=0; j<x; ++j) {
+                        r[j] = 1;
+                    }
+                    for(std::size_t j=x; j<r.size(); ++j) {
+                        r[j] = 0;
+                    }
+                    std::random_shuffle(r.begin(), r.end(), ea.rng());
+                    _C[i] = 0;
+                }
+                break;
             }
-            for(std::size_t j=x; j<r.size(); ++j) {
-                r[j] = 0;
+            case 1: { // uniform probability
+                for(std::size_t i=0; i<_IC.size1(); ++i) {
+                    row_type r(_IC,i);
+                    _C[i] = 0;
+                    for(std::size_t j=0; j<r.size(); ++j) {
+                        if(ea.rng().bit()) {
+                            r[j] = 1;
+                            ++_C[i];
+                        }
+                    }
+                    _C[i] = (_C[i] > (r.size()/2));
+                }
+                break;
             }
-            std::random_shuffle(r.begin(), r.end(), ea.rng());
-            _C[i] = 1;
-        }
-        
-        // 1/2 below pc:
-        for(std::size_t i=_IC.size1()/2; i<_IC.size1(); ++i) {
-            row_type r(_IC,i);
-            std::size_t x=(ea.rng().p()/2.0) * r.size();
-            for(std::size_t j=0; j<x; ++j) {
-                r[j] = 1;
-            }
-            for(std::size_t j=x; j<r.size(); ++j) {
-                r[j] = 0;
-            }
-            std::random_shuffle(r.begin(), r.end(), ea.rng());
-            _C[i] = 0;
         }
     }
     
     //! Calculate fitness.
-	template <typename Individual, typename RNG, typename EA>
-	double operator()(Individual& ind, RNG& rng, EA& ea) {
+    template <typename Individual, typename RNG, typename EA>
+    double operator()(Individual& ind, RNG& rng, EA& ea) {
         using namespace std;
         double w=0.0;
         
@@ -116,31 +142,24 @@ struct mkv_cellular_automata : fitness_function<unary_fitness<double>, constantS
             pt->fill(row.begin(), row.end());
             
             // for each update:
-            for(int u=0; u<(2*n); ++u) {
-                //                std::copy(S_t.begin(), S_t.end(), std::ostream_iterator<int>(std::cout, ""));
-                //                std::cout << std::endl;
-                
+            for(int u=0; u<(2*m*n*p); ++u) {
+                if(_cb != 0) {
+                    _cb->new_state(*pt);
+                }
                 bool changed=false;
-                
-                // state container is a 2d matrix:
-                // 0 1 2
-                // 3 4 5
-                // 6 7 8
-                
                 for(int k=0; k<p; ++k) { // page
                     for(int i=0; i<m; ++i) { // row
                         for(int j=0; j<n; ++j) { // col
-                            // which is offset by the radius of an agent's neighborhood...
-                            state_offset_type off(*pt, i-r, j-r, k-r);
-                            // and the state of agents in that neighborhood are accessed via an indexing adaptor:
-                            std::size_t x=k*m*n + n*i + j;
-                            ca[x].update(adaptor_type(off, 2*r+1, 2*r+1, 2*r+1));
-                            
-                            (*ptp1)(i,j,k) = ca[x].output(0);
-                            changed = changed || ((*pt)(i,j,k) != (*ptp1)(i,j,k));
+                            int agent=k*m*n+n*i+j; // agent's index
+                            state_offset_type offset(*pt, i-r, j-r, k-r); // offset torus to the upper left outer cell for this agent
+                            adaptor_type adaptor(offset, 2*r+1, 2*r+1, 2*r+1); // adapt the torus to the size of the agent's neighborhood
+                            ca[agent].update(adaptor); // update the agent
+                            (*ptp1)(i,j,k) = ca[agent].output(0); // get its output
+                            changed = changed || ((*pt)(i,j,k) != (*ptp1)(i,j,k)); // and check to see if anything's changed
                         }
                     }
                 }
+                
                 std::swap(pt, ptp1);
                 if(!changed) {
                     break;
@@ -196,6 +215,7 @@ public:
         add_option<CA_SAMPLES>(this);
         add_option<CA_OBJECTIVE>(this);
         add_option<CA_RADIUS>(this);
+        add_option<CA_IC>(this);
     }
     
     //! Define events (e.g., datafiles) here.
@@ -204,12 +224,18 @@ public:
         add_event<datafiles::fitness_dat>(ea);
     }
     
+    //! Define tools here.
+    virtual void gather_tools(EA& ea) {
+        add_tool<ca_1000x>(this);
+        add_tool<ca_movie>(this);
+    }
+    
     //! Called before initialization (good place to calculate config options).
     virtual void before_initialization(EA& ea) {
         using namespace ealib::mkv;
         int n = get<CA_RADIUS>(ea)*2+1;
         
-        put<MKV_INPUT_N>(n*n*n, ea); // lshift to square the # of inputs.
+        put<MKV_INPUT_N>(n*n*n, ea);
         put<MKV_OUTPUT_N>(1, ea);
         
         const std::string& gates = get<MKV_GATE_TYPES>(ea);

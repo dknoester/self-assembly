@@ -45,45 +45,76 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
     typedef std::vector<int> ivector_type;
     typedef boost::numeric::ublas::matrix<int> matrix_type;
     typedef boost::numeric::ublas::matrix_row<matrix_type> row_type;
-    typedef cvector<int> state_vector_type;
+    typedef cvector<int> state_container_type;
     
     matrix_type _IC; //!< Matrix of initial conditions.
     ivector_type _C; //!< Consensus bit per initial condition.
+    
+    struct callback {
+        virtual void new_state(state_container_type& s) = 0;
+    };
+    
+    callback* _cb;
+    
+    //! Reset the callback pointer.
+    void reset_callback(callback* c=0) {
+        _cb = c;
+    }
     
     //! Initialize the fitness function.
     template <typename RNG, typename EA>
     void initialize(RNG& rng, EA& ea) {
         using namespace std;
+        _cb = 0;
         
         _IC.resize(get<CA_SAMPLES>(ea), get<CA_N>(ea)); // initial conditions
         _C.resize(get<CA_SAMPLES>(ea)); // consensus bit
         
-        // 1/2 above pc:
-        for(std::size_t i=0; i<_IC.size1()/2; ++i) {
-            row_type r(_IC,i);
-            std::size_t x=(0.5 + ea.rng().p()/2.0) * r.size();
-            for(std::size_t j=0; j<x; ++j) {
-                r[j] = 1;
+        switch(get<CA_IC>(ea,0)) {
+            case 0: { // uniform density
+                // 1/2 above pc:
+                for(std::size_t i=0; i<_IC.size1()/2; ++i) {
+                    row_type r(_IC,i);
+                    std::size_t x=(0.5 + ea.rng().p()/2.0) * r.size();
+                    for(std::size_t j=0; j<x; ++j) {
+                        r[j] = 1;
+                    }
+                    for(std::size_t j=x; j<r.size(); ++j) {
+                        r[j] = 0;
+                    }
+                    std::random_shuffle(r.begin(), r.end(), ea.rng());
+                    _C[i] = 1;
+                }
+                
+                // 1/2 below pc:
+                for(std::size_t i=_IC.size1()/2; i<_IC.size1(); ++i) {
+                    row_type r(_IC,i);
+                    std::size_t x=(ea.rng().p()/2.0) * r.size();
+                    for(std::size_t j=0; j<x; ++j) {
+                        r[j] = 1;
+                    }
+                    for(std::size_t j=x; j<r.size(); ++j) {
+                        r[j] = 0;
+                    }
+                    std::random_shuffle(r.begin(), r.end(), ea.rng());
+                    _C[i] = 0;
+                }
+                break;
             }
-            for(std::size_t j=x; j<r.size(); ++j) {
-                r[j] = 0;
+            case 1: { // uniform probability
+                for(std::size_t i=0; i<_IC.size1(); ++i) {
+                    row_type r(_IC,i);
+                    _C[i] = 0;
+                    for(std::size_t j=0; j<r.size(); ++j) {
+                        if(ea.rng().bit()) {
+                            r[j] = 1;
+                            ++_C[i];
+                        }
+                    }
+                    _C[i] = (_C[i] > (r.size()/2));
+                }
+                break;
             }
-            std::random_shuffle(r.begin(), r.end(), ea.rng());
-            _C[i] = 1;
-        }
-
-        // 1/2 below pc:
-        for(std::size_t i=_IC.size1()/2; i<_IC.size1(); ++i) {
-            row_type r(_IC,i);
-            std::size_t x=(ea.rng().p()/2.0) * r.size();
-            for(std::size_t j=0; j<x; ++j) {
-                r[j] = 1;
-            }
-            for(std::size_t j=x; j<r.size(); ++j) {
-                r[j] = 0;
-            }
-            std::random_shuffle(r.begin(), r.end(), ea.rng());
-            _C[i] = 0;
         }
     }
     
@@ -101,13 +132,14 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
         // for each initial condition:
         for(std::size_t ic=0; ic<_IC.size1(); ++ic) {
             row_type row(_IC,ic);
-            state_vector_type S_t(row.begin(), row.end());
-            state_vector_type S_tplus1(row.size(), 0);
+            state_container_type S_t(row.begin(), row.end());
+            state_container_type S_tplus1(row.size(), 0);
             
             // for each update:
             for(int u=0; u<(2*n); ++u) {
-//                std::copy(S_t.begin(), S_t.end(), std::ostream_iterator<int>(std::cout, ""));
-//                std::cout << std::endl;
+                if(_cb != 0) {
+                    _cb->new_state(S_t);
+                }
                 
                 bool changed=false;
                 // for each element in the current state:
@@ -181,6 +213,7 @@ public:
         add_option<CA_SAMPLES>(this);
         add_option<CA_OBJECTIVE>(this);
         add_option<CA_RADIUS>(this);
+        add_option<CA_IC>(this);
     }
     
     //! Define events (e.g., datafiles) here.
@@ -188,6 +221,12 @@ public:
         add_event<reinitialize_fitness_function>(ea);
         add_event<datafiles::fitness_dat>(ea);
     };
+    
+    //! Define tools here.
+    virtual void gather_tools(EA& ea) {
+        add_tool<ca_1000x>(this);
+        add_tool<ca_movie>(this);
+    }
     
     //! Called before initialization (good place to calculate config options).
     virtual void before_initialization(EA& ea) {

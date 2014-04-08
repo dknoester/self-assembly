@@ -1,0 +1,59 @@
+\documentclass[10pt, conference, compsocconf]{IEEEtran}
+\usepackage{float}
+\usepackage{hyperref}
+\hypersetup{
+	colorlinks=true,
+	linkcolor=black,
+	citecolor=black,
+	urlcolor=blue,
+}
+\usepackage{fullpage}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{setspace}
+\usepackage{subfigure}
+\usepackage{algorithm, algorithmic}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{url}
+\usepackage{cite}
+\usepackage{fancyvrb}
+\usepackage{amsmath, amsfonts}
+\usepackage{rotating}
+\input{definitions}
+
+\begin{document}
+\sloppy
+
+\title{TBD}
+
+\author{\IEEEauthorblockN{David B.~Knoester and others}
+\IEEEauthorblockA{Dept.~of Microbiology and Molecular Genetics\\
+Michigan State University\\
+East Lansing, Michigan 48824\\
+Email: \{dk\}@msu.edu}}
+\maketitle
+
+\begin{abstract}
+Combining systems that self-organize with those that self-adapt is an important problem in SASO systems.  In thi
+An important problem in self-organizing and self-adaptive systems is how to merge 
+%This paper describes a study in the use of neuroevolution to discover controllers for a simulated mobile ad hoc network.  Neuroevolution is a technique whereby an evolutionary algorithm is used to produce artificial neural networks that solve a user-defined task.  Here, we use neuroevolution to study a generic coverage-based problem, where agents in the network are to maximize the area covered by the largest connected component of the network.  An example application for this work is the discovery of control algorithms for an ocean-monitoring mobile network.  While this is a challenging problem domain for neuroevolution, results of our experiments reveal three important characteristics to be considered when using such an approach.  Specifically, we found that approaches that implicitly reduce entropy, while explicitly addressing self-organization and scalability, are capable of discovering behaviors that remain stable even when they control networks of different sizes than were evaluated during evolution.  This result suggests that neuroevolution may be a viable strategy for discovering controllers for self-organizing multi-agent systems.
+\end{abstract}
+
+\begin{IEEEkeywords}
+Evolutionary algorithm, cellular automata, self-organization, self-adaptation.
+\end{IEEEkeywords}
+
+\input{s1-introduction}
+\input{s2-relatedWork}
+\input{s3-methods}
+\input{s4-results}
+
+\section{Conclusion}\label{s:conclusion}
+%Experiments described herein indicate that neuroevolutionary approaches that reduce entropy, while increasing self-organization and scalability, are capable of discovering effective controllers for mobile ad hoc networks.  Moreover, we found that the evolved behaviors remained stable even when controlling different numbers of nodes than they had originally been evaluated with.  This result suggests an approach by which control of large-scale multi-agent systems might be achieved.  There are, of course, many different ways that these factors could be integrated into evolutionary algorithms.  In future work, we plan to investigate multiobjective optimization approaches for these characteristics, with a goal of achieving reliable, self-organizing, large-scale systems.
+\section*{Further Information and Acknowledgments}
+
+
+%\bibliography{dk}
+\bibliographystyle{IEEEtran}
+\end{document}
