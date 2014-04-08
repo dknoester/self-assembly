@@ -111,7 +111,7 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
                             ++_C[i];
                         }
                     }
-                    _C[i] = (_C[i] > (r.size()/2));
+                    _C[i] = (_C[i] > static_cast<int>((r.size()/2)));
                 }
                 break;
             }
