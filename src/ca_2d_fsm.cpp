@@ -110,6 +110,8 @@ struct mkv_cellular_automata : fitness_function<unary_fitness<double>, constantS
                         if(ea.rng().bit()) {
                             r[j] = 1;
                             ++_C[i];
+                        } else {
+                            r[j] = 0;
                         }
                     }
                     _C[i] = (_C[i] > static_cast<int>((r.size()/2)));
@@ -219,17 +221,19 @@ public:
         add_option<CA_IC>(this);
     }
     
+    //! Define tools here.
+    virtual void gather_tools() {
+        add_tool<ca_dom_1000x>(this);
+        add_tool<ca_all_1000x>(this);
+        add_tool<ca_movie>(this);
+    }
+
     //! Define events (e.g., datafiles) here.
     virtual void gather_events(EA& ea) {
         add_event<reinitialize_fitness_function>(ea);
         add_event<datafiles::fitness_dat>(ea);
     }
     
-    //! Define tools here.
-    virtual void gather_tools(EA& ea) {
-        add_tool<ca_1000x>(this);
-        add_tool<ca_movie>(this);
-    }
 
     //! Called before initialization (good place to calculate config options).
     virtual void before_initialization(EA& ea) {

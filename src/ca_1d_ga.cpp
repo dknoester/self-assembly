@@ -109,6 +109,8 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
                         if(ea.rng().bit()) {
                             r[j] = 1;
                             ++_C[i];
+                        } else {
+                            r[j] = 0;
                         }
                     }
                     _C[i] = (_C[i] > static_cast<int>((r.size()/2)));

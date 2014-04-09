@@ -21,27 +21,46 @@
 #define _ANALYSIS_H_
 
 #include <boost/lexical_cast.hpp>
+#include <boost/accumulators/accumulators.hpp>
+#include <boost/accumulators/statistics/stats.hpp>
+#include <boost/accumulators/statistics/mean.hpp>
+#include <boost/accumulators/statistics/max.hpp>
+#include <boost/accumulators/statistics/min.hpp>
 
 #include <ea/analysis.h>
 #include <ea/analysis/dominant.h>
 
 #include "ca.h"
 
-LIBEA_ANALYSIS_TOOL(ca_1000x) {
-    // overwrite the initial conditions embedded in the fitness function:
+LIBEA_ANALYSIS_TOOL(ca_dom_1000x) {
+    // get the dominant:
+    typename EA::iterator i=analysis::dominant(ea);
+    
+    datafile df("ca_dom_1000x.dat");
+    df.add_field("individual").add_field("w0").add_field("w1");
+    df.write(get<IND_NAME>(*i)).write(static_cast<double>(fitness(*i,ea)));
+
     put<CA_IC>(1,ea);
     put<CA_SAMPLES>(1000,ea);
     initialize_fitness_function(ea.fitness_function(), ea);
     
-    // get the dominant:
-    typename EA::iterator i=analysis::dominant(ea);
-    
-    datafile df("ca_1000x.dat");
-    df.add_field("individual").add_field("w0").add_field("w1");
-    df.write(get<IND_NAME>(*i)).write(static_cast<double>(fitness(*i,ea)));
-    
-    nullify_fitness(*i,ea);
+    recalculate_fitness(*i,ea);
     df.write(static_cast<double>(fitness(*i,ea))).endl();
+}
+
+LIBEA_ANALYSIS_TOOL(ca_all_1000x) {
+    datafile df("ca_all_1000x.dat");
+    df.add_field("individual").add_field("w0").add_field("w1");
+    
+    put<CA_IC>(1,ea);
+    put<CA_SAMPLES>(1000,ea);
+    initialize_fitness_function(ea.fitness_function(), ea);
+
+    for(typename EA::iterator i=ea.begin(); i!=ea.end(); ++i) {
+        df.write(get<IND_NAME>(*i)).write(static_cast<double>(fitness(*i,ea)));
+        recalculate_fitness(*i,ea);
+        df.write(static_cast<double>(fitness(*i,ea))).endl();
+    }
 }
 
 template <typename FitnessFunction>
@@ -57,14 +76,21 @@ struct movie_callback : public FitnessFunction::callback {
 };
 
 LIBEA_ANALYSIS_TOOL(ca_movie) {
+    using namespace boost::accumulators;
+    
     // get the dominant:
     typename EA::iterator ind=analysis::dominant(ea);
     
     put<CA_IC>(1,ea);
-    put<CA_SAMPLES>(10,ea);
-    initialize_fitness_function(ea.fitness_function(), ea);
-
+    put<CA_SAMPLES>(1,ea);
+    
+    datafile summary("ca_movie_summary.dat");
+    summary.add_field("individual").add_field("mean_w");
+    accumulator_set<double, stats<tag::min, tag::mean, tag::max> > sacc;
+    
     for(int i=0; i<10; ++i) {
+        initialize_fitness_function(ea.fitness_function(), ea);
+        
         datafile df("ca_movie_" + boost::lexical_cast<std::string>(i) + ".dat");
         df.comment("first line holds dimensions of world")
         .comment("there are always three dimensions, in (m,n,p) order.")
@@ -73,11 +99,13 @@ LIBEA_ANALYSIS_TOOL(ca_movie) {
         .comment("m==y axis, n==x axis, p==z axis")
         .comment("each subsequent line holds an entire world state in (page-)row-major order");
         df.write(get<CA_M>(ea)).write(get<CA_N>(ea)).write(get<CA_P>(ea,0)).endl();
-
+        
         movie_callback<typename EA::fitness_function_type> cb(df);
         ea.fitness_function().reset_callback(&cb);
         recalculate_fitness(*ind,ea);
+        sacc(static_cast<double>(fitness(*ind,ea)));
     }
+    summary.write(get<IND_NAME>(*ind)).write(mean(sacc)).endl();
 }
 
 #endif
