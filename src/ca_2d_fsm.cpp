@@ -1,4 +1,4 @@
-/* ca_3d_fsm.cpp
+/* ca_2d_fsm.cpp
  *
  * This file is part of Self-Assembly.
  *
@@ -27,11 +27,11 @@ using namespace ealib;
 #include "ca.h"
 
 
-struct cellular_automata_3d : abstract_cellular_automata {
+struct cellular_automata_2d : abstract_cellular_automata {
     typedef abstract_cellular_automata parent;
-    typedef torus3<int> state_container_type;
-    typedef offset_torus3<state_container_type> state_offset_type;
-    typedef adaptor_torus3<state_offset_type> adaptor_type;
+    typedef torus2<int> state_container_type;
+    typedef offset_torus2<state_container_type> state_offset_type;
+    typedef adaptor_torus2<state_offset_type> adaptor_type;
     
     struct callback {
         virtual void new_state(state_container_type& s) = 0;
@@ -52,24 +52,23 @@ struct cellular_automata_3d : abstract_cellular_automata {
     }
     
     //! Calculate fitness.
-    template <typename Individual, typename RNG, typename EA>
-    double operator()(Individual& ind, RNG& rng, EA& ea) {
+	template <typename Individual, typename RNG, typename EA>
+	double operator()(Individual& ind, RNG& rng, EA& ea) {
         using namespace std;
         double w=0.0;
         
         const int m = get<CA_M>(ea);
         const int n = get<CA_N>(ea);
-        const int p = get<CA_P>(ea);
         const int r = get<CA_RADIUS>(ea);
         
         // build all the phenotypes, reset their rngs:
-        std::vector<typename EA::phenotype_type> ca(m*n*p, ealib::phenotype(ind, ea));
+        std::vector<typename EA::phenotype_type> ca(m*n, ealib::phenotype(ind, ea));
         for(std::size_t i=0; i<ca.size(); ++i) {
             ca[i].reset(rng.seed());
         }
         
-        state_container_type S_t(m, n, p, 0);
-        state_container_type S_tplus1(m, n, p, 0);
+        state_container_type S_t(m, n, 0);
+        state_container_type S_tplus1(m, n, 0);
         state_container_type* pt=&S_t;
         state_container_type* ptp1=&S_tplus1;
         
@@ -77,23 +76,21 @@ struct cellular_automata_3d : abstract_cellular_automata {
         for(std::size_t ic=0; ic<_IC.size1(); ++ic) {
             row_type row(_IC,ic);
             pt->fill(row.begin(), row.end());
-            
+
             // for each update:
-            for(int u=0; u<(2*m*n*p); ++u) {
+            for(int u=0; u<(2*m*n); ++u) {
                 if(_cb != 0) {
                     _cb->new_state(*pt);
                 }
                 bool changed=false;
-                for(int k=0; k<p; ++k) { // page
-                    for(int i=0; i<m; ++i) { // row
-                        for(int j=0; j<n; ++j) { // col
-                            int agent=k*m*n+n*i+j; // agent's index
-                            state_offset_type offset(*pt, i-r, j-r, k-r); // offset torus to the upper left outer cell for this agent
-                            adaptor_type adaptor(offset, 2*r+1, 2*r+1, 2*r+1); // adapt the torus to the size of the agent's neighborhood
-                            ca[agent].update(adaptor); // update the agent
-                            (*ptp1)(i,j,k) = ca[agent].output(0); // get its output
-                            changed = changed || ((*pt)(i,j,k) != (*ptp1)(i,j,k)); // and check to see if anything's changed
-                        }
+                for(int i=0; i<m; ++i) {
+                    for(int j=0; j<n; ++j) {
+                        int agent=n*i+j; // agent's index
+                        state_offset_type offset(*pt, i-r, j-r); // offset torus to the upper left cell for this agent
+                        adaptor_type adaptor(offset, 2*r+1, 2*r+1); // adapt the torus to the size of the agent's neighborhood
+                        ca[agent].update(adaptor); // update the agent
+                        (*ptp1)(i,j) = ca[agent].output(0); // get its output
+                        changed = changed || ((*pt)(i,j) != (*ptp1)(i,j)); // and check to see if anything's changed
                     }
                 }
                 
@@ -113,7 +110,7 @@ struct cellular_automata_3d : abstract_cellular_automata {
 
 // Markov network evolutionary algorithm definition.
 typedef markov_evolution_algorithm
-< cellular_automata_3d
+< cellular_automata_2d
 , recombination::asexual
 , generational_models::steady_state<selection::random<with_replacementS>, selection::rank>
 > ea_type;

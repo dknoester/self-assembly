@@ -23,6 +23,7 @@
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <vector>
 
 #include <ea/cmdline_interface.h>
 #include <ea/datafiles/fitness.h>

@@ -1,4 +1,4 @@
-/* ca_1d_mkv.cpp
+/* ca_1d_fsm.cpp
  *
  * This file is part of Self-Assembly.
  *
@@ -17,9 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <vector>
-
-#include <ea/evolutionary_algorithm.h>
+#include <ea/mkv/markov_evolution_algorithm.h>
 #include <ea/generational_models/steady_state.h>
 #include <ea/selection/rank.h>
 #include <ea/selection/random.h>

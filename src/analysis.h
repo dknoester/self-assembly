@@ -24,8 +24,6 @@
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/mean.hpp>
-#include <boost/accumulators/statistics/max.hpp>
-#include <boost/accumulators/statistics/min.hpp>
 
 #include <ea/analysis.h>
 #include <ea/analysis/dominant.h>
@@ -86,7 +84,7 @@ LIBEA_ANALYSIS_TOOL(ca_movie) {
     
     datafile summary("ca_movie_summary.dat");
     summary.add_field("individual").add_field("mean_w");
-    accumulator_set<double, stats<tag::min, tag::mean, tag::max> > sacc;
+    accumulator_set<double, stats<tag::mean> > sacc;
     
     for(int i=0; i<10; ++i) {
         initialize_fitness_function(ea.fitness_function(), ea);
