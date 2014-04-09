@@ -13,6 +13,9 @@
 			buildPhases = (
 			);
 			dependencies = (
+				428CB4F018F5855900E6093D /* PBXTargetDependency */,
+				428CB4F218F5855900E6093D /* PBXTargetDependency */,
+				428CB4F418F5855900E6093D /* PBXTargetDependency */,
 				42A160C516B87E2F0007755C /* PBXTargetDependency */,
 			);
 			name = all;
@@ -36,6 +39,27 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		428CB4EF18F5855900E6093D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4244196715859482009863BE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 42A170D618E834F500C3A248;
+			remoteInfo = "self-assembly-ca-1d-ga";
+		};
+		428CB4F118F5855900E6093D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4244196715859482009863BE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 423243C818EF1E510047D8ED;
+			remoteInfo = "self-assembly-ca-2d-fsm";
+		};
+		428CB4F318F5855900E6093D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4244196715859482009863BE /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 423243DA18F2331D0047D8ED;
+			remoteInfo = "self-assembly-ca-3d-fsm";
+		};
 		42A160C416B87E2F0007755C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 4244196715859482009863BE /* Project object */;
@@ -338,6 +362,21 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		428CB4F018F5855900E6093D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 42A170D618E834F500C3A248 /* self-assembly-ca-1d-ga */;
+			targetProxy = 428CB4EF18F5855900E6093D /* PBXContainerItemProxy */;
+		};
+		428CB4F218F5855900E6093D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 423243C818EF1E510047D8ED /* self-assembly-ca-2d-fsm */;
+			targetProxy = 428CB4F118F5855900E6093D /* PBXContainerItemProxy */;
+		};
+		428CB4F418F5855900E6093D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 423243DA18F2331D0047D8ED /* self-assembly-ca-3d-fsm */;
+			targetProxy = 428CB4F318F5855900E6093D /* PBXContainerItemProxy */;
+		};
 		42A160C516B87E2F0007755C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 42F4EE5B16AEE80D000123A4 /* self-assembly-ca-1d-fsm */;

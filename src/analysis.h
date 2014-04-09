@@ -40,7 +40,7 @@ LIBEA_ANALYSIS_TOOL(ca_dom_1000x) {
     df.add_field("individual").add_field("w0").add_field("w1");
     df.write(get<IND_NAME>(*i)).write(static_cast<double>(fitness(*i,ea)));
 
-    put<CA_IC>(1,ea);
+    put<CA_IC_TYPE>(1,ea);
     put<CA_SAMPLES>(1000,ea);
     initialize_fitness_function(ea.fitness_function(), ea);
     
@@ -52,7 +52,7 @@ LIBEA_ANALYSIS_TOOL(ca_all_1000x) {
     datafile df("ca_all_1000x.dat");
     df.add_field("individual").add_field("w0").add_field("w1");
     
-    put<CA_IC>(1,ea);
+    put<CA_IC_TYPE>(1,ea);
     put<CA_SAMPLES>(1000,ea);
     initialize_fitness_function(ea.fitness_function(), ea);
 
@@ -81,7 +81,7 @@ LIBEA_ANALYSIS_TOOL(ca_movie) {
     // get the dominant:
     typename EA::iterator ind=analysis::dominant(ea);
     
-    put<CA_IC>(1,ea);
+    put<CA_IC_TYPE>(1,ea);
     put<CA_SAMPLES>(1,ea);
     
     datafile summary("ca_movie_summary.dat");

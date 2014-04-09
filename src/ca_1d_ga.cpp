@@ -34,12 +34,12 @@
 using namespace ealib;
 
 #include "ca.h"
-#include "analysis.h"
 
 
 /*! 1D GA-based cellular automata.
  
- Nomenclature based on Mitchell, Crutchfield, and Das '96.
+ This is a recapitulation of the work done by Mitchell, Cruthfield, and Das.
+ It is not, by itself, interesting.
  */
 struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS, stochasticS> {
     typedef std::vector<int> ivector_type;
@@ -70,7 +70,7 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
         _IC.resize(get<CA_SAMPLES>(ea), get<CA_N>(ea)); // initial conditions
         _C.resize(get<CA_SAMPLES>(ea)); // consensus bit
         
-        switch(get<CA_IC>(ea,0)) {
+        switch(get<CA_IC_TYPE>(ea,0)) {
             case 0: { // uniform density
                 // 1/2 above pc:
                 for(std::size_t i=0; i<_IC.size1()/2; ++i) {
@@ -161,18 +161,7 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
             }
             
             // calculate fitness:
-            switch(static_cast<objective_type>(get<CA_OBJECTIVE>(ea))) {
-                case DENSITY: {
-                    w += algorithm::all(S_t.begin(), S_t.end(), bind2nd(equal_to<int>(), _C[ic]));
-                    break;
-                }
-                case SYNC: {
-                    break;
-                }
-                default: {
-                    throw bad_argument_exception("invalid ca objective");
-                }
-            }
+            w += algorithm::all(S_t.begin(), S_t.end(), bind2nd(equal_to<int>(), _C[ic]));
         }
         return w / static_cast<double>(get<CA_SAMPLES>(ea));
     }
@@ -196,7 +185,7 @@ typedef evolutionary_algorithm
  and configuration file parser.  This class specializes that parser for this EA.
  */
 template <typename EA>
-class cli : public cmdline_interface<EA> {
+class gacli : public cmdline_interface<EA> {
 public:
 
     //! Define the options that can be parsed.
@@ -213,9 +202,15 @@ public:
         
         add_option<CA_N>(this);
         add_option<CA_SAMPLES>(this);
-        add_option<CA_OBJECTIVE>(this);
         add_option<CA_RADIUS>(this);
-        add_option<CA_IC>(this);
+        add_option<CA_IC_TYPE>(this);
+    }
+    
+    //! Define tools here.
+    virtual void gather_tools() {
+        add_tool<ca_dom_1000x>(this);
+        add_tool<ca_all_1000x>(this);
+        add_tool<ca_movie>(this);
     }
     
     //! Define events (e.g., datafiles) here.
@@ -224,12 +219,6 @@ public:
         add_event<datafiles::fitness_dat>(ea);
     };
     
-    //! Define tools here.
-    virtual void gather_tools(EA& ea) {
-        add_tool<ca_1000x>(this);
-        add_tool<ca_movie>(this);
-    }
-    
     //! Called before initialization (good place to calculate config options).
     virtual void before_initialization(EA& ea) {
         put<REPRESENTATION_SIZE>(0x01 << (get<CA_RADIUS>(ea)*2+1), ea);
@@ -237,4 +226,4 @@ public:
 };
 
 // This macro connects the cli defined above to the main() function provided by ealib.
-LIBEA_CMDLINE_INSTANCE(ea_type, cli);
+LIBEA_CMDLINE_INSTANCE(ea_type, gacli);
