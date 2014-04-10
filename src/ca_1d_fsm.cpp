@@ -18,10 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <ea/mkv/markov_evolution_algorithm.h>
-#include <ea/generational_models/steady_state.h>
+#include <ea/generational_models/moran_process.h>
 #include <ea/selection/rank.h>
 #include <ea/selection/random.h>
 #include <ea/cvector.h>
+#include <delay.h>
 using namespace ealib;
 
 #include "ca.h"
@@ -103,10 +104,10 @@ struct cellular_automata_1d : abstract_cellular_automata {
 
 
 // Markov network evolutionary algorithm definition.
-typedef markov_evolution_algorithm
-< cellular_automata_1d
+typedef markov_evolution_lod_algorithm
+< mean_delay<cellular_automata_1d>
 , recombination::asexual
-, generational_models::steady_state<selection::random<with_replacementS>, selection::rank>
+, generational_models::moran_process<selection::proportionate< >, selection::rank>
 > ea_type;
 
 // This macro connects the cli defined above to the main() function provided by ealib.

@@ -1,5 +1,6 @@
 LIBEA_INCLUDE = ../ealib/libea/include
-HEADER_SEARCH_PATHS = $(LIBEA_INCLUDE) $(HOME)/include /usr/local/include
+HIMALAYA_INCLUDE = ../himalaya/src
+HEADER_SEARCH_PATHS = $(LIBEA_INCLUDE) $(HIMALAYA_INCLUDE) $(HOME)/include /usr/local/include
 OTHER_CPLUSPLUSFLAGS = -ftemplate-depth=255
 OTHER_LDFLAGS = -lboost_iostreams -lboost_program_options -lboost_regex -lboost_serialization -lboost_signals -lboost_filesystem -lboost_system
 LIBRARY_SEARCH_PATHS = $(HOME)/lib /usr/local/lib

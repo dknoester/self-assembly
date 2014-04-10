@@ -28,7 +28,14 @@
 #include <ea/cmdline_interface.h>
 #include <ea/datafiles/fitness.h>
 #include <ea/meta_data.h>
+#include <ea/line_of_descent.h>
 #include <ea/mkv/markov_evolution_algorithm.h>
+#include <ea/generational_models/moran_process.h>
+#include <ea/selection/rank.h>
+#include <ea/selection/random.h>
+#include <ea/cvector.h>
+#include <ea/torus.h>
+#include <delay.h>
 using namespace ealib;
 
 enum objective_type { DENSITY, SYNC };
@@ -51,13 +58,14 @@ public:
         mkv::add_options(this);
         
         add_option<POPULATION_SIZE>(this);
-        add_option<STEADY_STATE_LAMBDA>(this);
+        add_option<MORAN_REPLACEMENT_RATE_P>(this);
         add_option<RUN_UPDATES>(this);
         add_option<RUN_EPOCHS>(this);
         add_option<CHECKPOINT_PREFIX>(this);
         add_option<RNG_SEED>(this);
         add_option<RECORDING_PERIOD>(this);
         add_option<FF_INITIALIZATION_PERIOD>(this);
+        add_option<DELAY_GENERATIONS>(this);
         
         add_option<CA_M>(this);
         add_option<CA_N>(this);
@@ -78,6 +86,7 @@ public:
     virtual void gather_events(EA& ea) {
         add_event<reinitialize_fitness_function>(ea);
         add_event<datafiles::fitness_dat>(ea);
+        add_event<lod_event>(ea);
     }
     
     //! Called before initialization (good place to calculate config options).
