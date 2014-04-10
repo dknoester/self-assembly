@@ -36,14 +36,14 @@ LIBEA_ANALYSIS_TOOL(ca_dom_1000x) {
     
     datafile df("ca_dom_1000x.dat");
     df.add_field("individual").add_field("w0").add_field("w1");
-    df.write(get<IND_NAME>(*i)).write(static_cast<double>(fitness(*i,ea)));
+    df.write(get<IND_NAME>(*i)).write(static_cast<double>(ealib::fitness(*i,ea)));
 
     put<CA_IC_TYPE>(1,ea);
     put<CA_SAMPLES>(1000,ea);
     initialize_fitness_function(ea.fitness_function(), ea);
     
     recalculate_fitness(*i,ea);
-    df.write(static_cast<double>(fitness(*i,ea))).endl();
+    df.write(static_cast<double>(ealib::fitness(*i,ea))).endl();
 }
 
 LIBEA_ANALYSIS_TOOL(ca_all_1000x) {
@@ -55,9 +55,9 @@ LIBEA_ANALYSIS_TOOL(ca_all_1000x) {
     initialize_fitness_function(ea.fitness_function(), ea);
 
     for(typename EA::iterator i=ea.begin(); i!=ea.end(); ++i) {
-        df.write(get<IND_NAME>(*i)).write(static_cast<double>(fitness(*i,ea)));
+        df.write(get<IND_NAME>(*i)).write(static_cast<double>(ealib::fitness(*i,ea)));
         recalculate_fitness(*i,ea);
-        df.write(static_cast<double>(fitness(*i,ea))).endl();
+        df.write(static_cast<double>(ealib::fitness(*i,ea))).endl();
     }
 }
 
@@ -101,7 +101,7 @@ LIBEA_ANALYSIS_TOOL(ca_movie) {
         movie_callback<typename EA::fitness_function_type> cb(df);
         ea.fitness_function().reset_callback(&cb);
         recalculate_fitness(*ind,ea);
-        sacc(static_cast<double>(fitness(*ind,ea)));
+        sacc(static_cast<double>(ealib::fitness(*ind,ea)));
     }
     summary.write(get<IND_NAME>(*ind)).write(mean(sacc)).endl();
 }
