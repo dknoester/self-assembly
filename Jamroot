@@ -2,9 +2,11 @@ import os ;
 local HOME = [ os.environ HOME ] ;
 
 use-project /libea : ../ealib/libea ;
+use-project /himalaya : ../himalaya/ ;
 
 exe self-assembly-ca-1d-ga :
     src/ca_1d_ga.cpp
+    /himalaya//himalaya
     /libea//libea
     /libea//libea_runner
     : <include>./include <link>static
@@ -12,6 +14,7 @@ exe self-assembly-ca-1d-ga :
 
 exe self-assembly-ca-1d-fsm :
     src/ca_1d_fsm.cpp
+    /himalaya//himalaya
     /libea//libea
     /libea//libea_runner
     : <include>./include <link>static
@@ -19,6 +22,7 @@ exe self-assembly-ca-1d-fsm :
 
 exe self-assembly-ca-2d-fsm :
     src/ca_2d_fsm.cpp
+    /himalaya//himalaya
     /libea//libea
     /libea//libea_runner
     : <include>./include <link>static
@@ -26,6 +30,7 @@ exe self-assembly-ca-2d-fsm :
 
 exe self-assembly-ca-3d-fsm :
     src/ca_3d_fsm.cpp
+    /himalaya//himalaya
     /libea//libea
     /libea//libea_runner
     : <include>./include <link>static
