@@ -3,7 +3,7 @@ set email dk@msu.edu
 set freq_email Crash
 set priority 3
 set class_pref 99
-set walltime 12
+set walltime 24
 set mem_request 2
 set config_dir config
 set max_cpus 30
