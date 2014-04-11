@@ -49,7 +49,7 @@ struct cellular_automata_2d : abstract_cellular_automata {
     template <typename RNG, typename EA>
     void initialize(RNG& rng, EA& ea) {
         _cb = 0;
-        parent::initialize(rng, ea);
+        parent::initialize(static_cast<std::size_t>(get<CA_M>(ea)*get<CA_N>(ea)), rng, ea);
     }
     
     //! Calculate fitness.

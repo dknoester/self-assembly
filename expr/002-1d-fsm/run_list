@@ -1,4 +1,4 @@
-set description 002-fsm
+set description 002-1d-fsm
 set email dk@msu.edu
 set freq_email Crash
 set priority 3

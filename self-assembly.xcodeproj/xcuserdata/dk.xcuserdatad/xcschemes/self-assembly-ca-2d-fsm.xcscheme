@@ -64,11 +64,11 @@
             isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-l checkpoint-100.xml.gz --analyze ca_movie"
+            argument = "-l checkpoint-10000.xml.gz --analyze ca_movie"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-l checkpoint-100.xml.gz --analyze ca_all_1000x"
+            argument = "-l checkpoint-10000.xml.gz --analyze ca_dom_1000x"
             isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>

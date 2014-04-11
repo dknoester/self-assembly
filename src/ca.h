@@ -124,10 +124,10 @@ struct abstract_cellular_automata : fitness_function<unary_fitness<double>, cons
     
     //! Initialize the fitness function.
     template <typename RNG, typename EA>
-    void initialize(RNG& rng, EA& ea) {
+    void initialize(std::size_t n, RNG& rng, EA& ea) {
         using namespace std;
         
-        _IC.resize(get<CA_SAMPLES>(ea), get<CA_N>(ea)); // initial conditions
+        _IC.resize(get<CA_SAMPLES>(ea), n); // initial conditions
         _C.resize(get<CA_SAMPLES>(ea)); // consensus bit
         
         switch(get<CA_IC_TYPE>(ea,0)) {
