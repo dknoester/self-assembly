@@ -76,6 +76,10 @@ struct cellular_automata_2d : abstract_cellular_automata {
         
         // for each initial condition:
         for(std::size_t ic=0; ic<_IC.size1(); ++ic) {
+            for(std::size_t i=0; i<ca.size(); ++i) {
+                ca[i].clear();
+            }
+
             row_type row(_IC,ic);
             pt->fill(row.begin(), row.end());
             ptp1->fill(row.begin(), row.end());
