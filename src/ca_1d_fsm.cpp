@@ -77,26 +77,31 @@ struct cellular_automata_1d : abstract_cellular_automata {
             std::copy(row.begin(), row.end(), pt->begin());
             
             // for each update:
+            int acc=0;
             for(int u=0; u<(2*n); ++u) {
                 if(_cb != 0) {
                     _cb->new_state(*pt);
                 }
                 bool changed=false;
+                acc=0;
                 for(int i=0; i<n; ++i) {
                     state_offset_type offset(*pt, i-r); // offset torus to the left cell for this agent
                     ca[i].update(offset); // update the agent
                     (*ptp1)[i] = ca[i].output(0); // get its output
                     changed = changed || ((*pt)[i] != (*ptp1)[i]); // and check to see if anything's changed
+                    acc += (*ptp1)[i]; // keep an accumulation of states
                 }
-                
                 std::swap(pt, ptp1);
-                if(!changed) {
+                // early stopping:
+                //  if states didn't change, or
+                //  all states are 0 or 1
+                if(!changed || (acc==0) || (acc==row.size())) {
                     break;
                 }
             }
             
             // calculate fitness:
-            w += algorithm::all(S_t.begin(), S_t.end(), bind2nd(equal_to<int>(), _C[ic]));
+            w += algorithm::all(pt->begin(), pt->end(), bind2nd(equal_to<int>(), _C[ic]));
         }
         return w / get<CA_SAMPLES>(ea);
     }
