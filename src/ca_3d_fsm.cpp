@@ -62,7 +62,8 @@ struct cellular_automata_3d : abstract_cellular_automata {
         const int n = get<CA_N>(ea);
         const int p = get<CA_P>(ea);
         const int r = get<CA_RADIUS>(ea);
-        
+        const int nin = pow(r*2+1,3);
+
         // build all the phenotypes, reset their rngs:
         std::vector<typename EA::phenotype_type> ca(m*n*p, ealib::phenotype(ind, ea));
         for(std::size_t i=0; i<ca.size(); ++i) {
@@ -78,9 +79,12 @@ struct cellular_automata_3d : abstract_cellular_automata {
         for(std::size_t ic=0; ic<_IC.size1(); ++ic) {
             row_type row(_IC,ic);
             pt->fill(row.begin(), row.end());
-            
+            ptp1->fill(row.begin(), row.end());
+
             // for each update:
             int acc=0;
+            int last_acc=std::accumulate(row.begin(), row.end(), 0);
+            int pos=0, neg=0;
             for(int u=0; u<(2*m*n*p); ++u) {
                 if(_cb != 0) {
                     _cb->new_state(*pt);
@@ -93,20 +97,36 @@ struct cellular_automata_3d : abstract_cellular_automata {
                             int agent=k*m*n+n*i+j; // agent's index
                             state_offset_type offset(*pt, i-r, j-r, k-r); // offset torus to the upper left outer cell for this agent
                             adaptor_type adaptor(offset, 2*r+1, 2*r+1, 2*r+1); // adapt the torus to the size of the agent's neighborhood
-                            ca[agent].update(adaptor); // update the agent
+                            reinforcement_adaptor<adaptor_type> radapt(adaptor, nin, pos, neg);
+                            ca[agent].update(radapt); // update the agent
                             (*ptp1)(i,j,k) = ca[agent].output(0); // get its output
                             changed = changed || ((*pt)(i,j,k) != (*ptp1)(i,j,k)); // and check to see if anything's changed
                             acc += (*ptp1)(i,j,k); // keep an accumulation of states
                         }
                     }
                 }
+                // rotate the state vector; BE SURE to use pt!
                 std::swap(pt, ptp1);
+
                 // early stopping:
                 //  if states didn't change, or
                 //  all states are 0 or 1
                 if(!changed || (acc==0) || (acc==static_cast<int>(row.size()))) {
                     break;
                 }
+                
+                // now, did we move in the right direction, compared to last time through this loop?
+                pos = 0; neg = 1;
+                if(_C[ic] == 1) {
+                    if(acc > last_acc) {
+                        pos = 1; neg = 0;
+                    }
+                } else {
+                    if(acc < last_acc) {
+                        pos = 1; neg = 0;
+                    }
+                }
+                last_acc = acc;
             }
             
             // calculate fitness:
@@ -124,5 +144,25 @@ typedef markov_evolution_lod_algorithm
 , generational_models::moran_process<selection::proportionate< >, selection::rank>
 > ea_type;
 
+/*! Define the CLI for a 3D FSM.
+ */
+template <typename EA>
+class self_assembly_3d_fsm_cli : public self_assembly_cli<EA> {
+public:
+    typedef self_assembly_cli<EA> parent;
+    
+    //! Called before initialization (good place to calculate config options).
+    virtual void before_initialization(EA& ea) {
+        using namespace ealib::mkv;
+        int nin=pow(get<CA_RADIUS>(ea)*2+1,3);
+        if(get<CA_REINFORCE>(ea,0)) {
+            nin += 2;
+        }
+        put<MKV_INPUT_N>(nin, ea);
+        parent::before_initialization(ea);
+    }
+    
+};
+
 // This macro connects the cli defined above to the main() function provided by ealib.
-LIBEA_CMDLINE_INSTANCE(ea_type, cli);
+LIBEA_CMDLINE_INSTANCE(ea_type, self_assembly_3d_fsm_cli);

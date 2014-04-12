@@ -46,13 +46,14 @@ LIBEA_MD_DECL(CA_N, "self_assembly.ca.n", int);
 LIBEA_MD_DECL(CA_P, "self_assembly.ca.p", int);
 LIBEA_MD_DECL(CA_IC_TYPE, "self_assembly.ca.initial_condition_type", int);
 LIBEA_MD_DECL(CA_SAMPLES, "self_assembly.ca.samples", int);
+LIBEA_MD_DECL(CA_REINFORCE, "self_assembly.ca.reinforcement", int);
 
 #include "analysis.h"
 
 /*! Define the EA's command-line interface.
  */
 template <typename EA>
-class cli : public cmdline_interface<EA> {
+class self_assembly_cli : public cmdline_interface<EA> {
 public:
     virtual void gather_options() {
         mkv::add_options(this);
@@ -73,6 +74,7 @@ public:
         add_option<CA_SAMPLES>(this);
         add_option<CA_RADIUS>(this);
         add_option<CA_IC_TYPE>(this);
+        add_option<CA_REINFORCE>(this);
     }
     
     //! Define tools here.
@@ -92,8 +94,6 @@ public:
     //! Called before initialization (good place to calculate config options).
     virtual void before_initialization(EA& ea) {
         using namespace ealib::mkv;
-        
-        put<MKV_INPUT_N>(get<CA_RADIUS>(ea)*2+1, ea);
         put<MKV_OUTPUT_N>(1, ea);
         
         const std::string& gates = get<MKV_GATE_TYPES>(ea);
@@ -199,5 +199,29 @@ struct abstract_cellular_automata : fitness_function<unary_fitness<double>, cons
     }
 };
 
+template <typename RandomAccess>
+struct reinforcement_adaptor {
+    typedef typename RandomAccess::value_type value_type;
+    
+    reinforcement_adaptor(RandomAccess& r, std::size_t n, value_type pos, value_type neg) : _r(r), _n(n), _pos(pos), _neg(neg) {
+    }
+
+    value_type operator[](std::size_t i) {
+        assert(i < (_n + 2));
+
+        if(i < _n) {
+            return _r[i];
+        }
+        if(i == _n) {
+            return _pos;
+        } else {
+            return _neg;
+        }
+    }
+    
+    RandomAccess& _r;
+    std::size_t _n;
+    value_type _pos, _neg;
+};
 
 #endif
