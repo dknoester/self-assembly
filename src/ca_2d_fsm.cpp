@@ -101,7 +101,7 @@ struct cellular_automata_2d : abstract_cellular_automata {
                 // early stopping:
                 //  if states didn't change, or
                 //  all states are 0 or 1
-                if(!changed || (acc==0) || (acc==row.size())) {
+                if(!changed || (acc==0) || (acc==static_cast<int>(row.size()))) {
                     break;
                 }
             }
