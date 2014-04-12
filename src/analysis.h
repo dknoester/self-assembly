@@ -96,7 +96,7 @@ LIBEA_ANALYSIS_TOOL(ca_movie) {
         .comment("note that this is matrix notation: m=row, n=col, p=page")
         .comment("m==y axis, n==x axis, p==z axis")
         .comment("each subsequent line holds an entire world state in (page-)row-major order");
-        df.write(get<CA_M>(ea)).write(get<CA_N>(ea)).write(get<CA_P>(ea,0)).endl();
+        df.write(get<CA_M>(ea,1)).write(get<CA_N>(ea)).write(get<CA_P>(ea,1)).endl();
         
         movie_callback<typename EA::fitness_function_type> cb(df);
         ea.fitness_function().reset_callback(&cb);
