@@ -74,8 +74,6 @@ struct movie_callback : public FitnessFunction::callback {
 };
 
 LIBEA_ANALYSIS_TOOL(ca_movie) {
-    using namespace boost::accumulators;
-    
     // get the dominant:
     typename EA::iterator ind=analysis::dominant(ea);
     
@@ -83,8 +81,8 @@ LIBEA_ANALYSIS_TOOL(ca_movie) {
     put<CA_SAMPLES>(1,ea);
     
     datafile summary("ca_movie_summary.dat");
-    summary.add_field("individual").add_field("mean_w");
-    accumulator_set<double, stats<tag::mean> > sacc;
+    summary.add_field("movie").add_field("w");
+    summary.comment("individual: " + boost::lexical_cast<std::string>(get<IND_NAME>(*ind)));
     
     for(int i=0; i<10; ++i) {
         initialize_fitness_function(ea.fitness_function(), ea);
@@ -101,9 +99,8 @@ LIBEA_ANALYSIS_TOOL(ca_movie) {
         movie_callback<typename EA::fitness_function_type> cb(df);
         ea.fitness_function().reset_callback(&cb);
         recalculate_fitness(*ind,ea);
-        sacc(static_cast<double>(ealib::fitness(*ind,ea)));
+        summary.write(i).write(static_cast<double>(ealib::fitness(*ind,ea))).endl();
     }
-    summary.write(get<IND_NAME>(*ind)).write(mean(sacc)).endl();
 }
 
 #endif

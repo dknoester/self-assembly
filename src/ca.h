@@ -47,6 +47,7 @@ LIBEA_MD_DECL(CA_P, "self_assembly.ca.p", int);
 LIBEA_MD_DECL(CA_IC_TYPE, "self_assembly.ca.initial_condition_type", int);
 LIBEA_MD_DECL(CA_SAMPLES, "self_assembly.ca.samples", int);
 LIBEA_MD_DECL(CA_REINFORCE, "self_assembly.ca.reinforcement", int);
+LIBEA_MD_DECL(CA_DIRECTION, "self_assembly.ca.direction", int);
 
 #include "analysis.h"
 
@@ -75,6 +76,7 @@ public:
         add_option<CA_RADIUS>(this);
         add_option<CA_IC_TYPE>(this);
         add_option<CA_REINFORCE>(this);
+        add_option<CA_DIRECTION>(this);
     }
     
     //! Define tools here.
@@ -194,6 +196,26 @@ struct abstract_cellular_automata : fitness_function<unary_fitness<double>, cons
                     _C[i] = (_C[i] > static_cast<int>((r.size()/2)));
                 }
                 break;
+            }
+            default: {
+                throw bad_argument_exception("CA_IC_TYPE must be 0-1");
+            }
+        }
+        
+        switch(get<CA_DIRECTION>(ea,0)) {
+            case 0: { // do nothing; majority search
+                break;
+            }
+            case 1: { // minority search
+                std::transform(_C.begin(), _C.end(), _C.begin(), std::logical_not<int>());
+                break;
+            }
+            case 2: { // random
+                std::generate(_C.begin(), _C.end(), bit_generator<RNG>(rng));
+                break;
+            }
+            default: {
+                throw bad_argument_exception("CA_DIRECTION must be 0-2");
             }
         }
     }

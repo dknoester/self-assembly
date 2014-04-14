@@ -127,6 +127,10 @@ struct cellular_automata_1d : abstract_cellular_automata {
                 }
                 last_acc = acc;
             }
+            // record the last state:
+            if(_cb != 0) {
+                _cb->new_state(*pt);
+            }
             
             // calculate fitness:
             w += algorithm::all(pt->begin(), pt->end(), bind2nd(equal_to<int>(), _C[ic]));
