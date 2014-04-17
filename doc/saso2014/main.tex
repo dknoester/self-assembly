@@ -35,13 +35,19 @@ Email: \{dk\}@msu.edu}}
 \maketitle
 
 \begin{abstract}
-Combining systems that self-organize with those that self-adapt is an important problem in SASO systems.  In thi
-An important problem in self-organizing and self-adaptive systems is how to merge 
-%This paper describes a study in the use of neuroevolution to discover controllers for a simulated mobile ad hoc network.  Neuroevolution is a technique whereby an evolutionary algorithm is used to produce artificial neural networks that solve a user-defined task.  Here, we use neuroevolution to study a generic coverage-based problem, where agents in the network are to maximize the area covered by the largest connected component of the network.  An example application for this work is the discovery of control algorithms for an ocean-monitoring mobile network.  While this is a challenging problem domain for neuroevolution, results of our experiments reveal three important characteristics to be considered when using such an approach.  Specifically, we found that approaches that implicitly reduce entropy, while explicitly addressing self-organization and scalability, are capable of discovering behaviors that remain stable even when they control networks of different sizes than were evaluated during evolution.  This result suggests that neuroevolution may be a viable strategy for discovering controllers for self-organizing multi-agent systems.
+Combining systems that self-organize with those that self-adapt is an important problem in SASO systems.  While cellular automata have long been used as a system to study self-organization, common rule-based approaches describing the functionality of a cellular automata do not provide a capability for self-adaptation.
+%
+In this paper, we describe an approach to cellular automata where the rule table is replaced by state machines that have been evolved via a novel evolutionary algorithm.  Through a number of different experiments, we show how this evolutionary algorithm is able to discover state machines that solve the well-known majority bit problem in 1-, 2-, and 3-dimensional cellular automata.
+%
+We then show that probabilistic state machine are capable of self-adaptation, and that adaptive PSMs that have been evolved for the majority bit problem more readily adapt to new problems, i.e., minority bit.
+%
+Finally, we show that when the state machines controlling each cell in a cellular automata are provided with information regarding the global state of the automata, performance, evolvability, and scalability of the resulting solutions dramatically improve.
+%
+Taken together, these results strengthen the case for cellular automata as an ideal study system for self-organization, indicate CAs for further exploratory work on SASO systems, and suggest that some form of reinforcement might supersede self-adaptation as a key component of SASO systems.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Evolutionary algorithm, cellular automata, self-organization, self-adaptation.
+Evolutionary algorithm, cellular automata, self-organization, self-adaptation, reinforcement learning.
 \end{IEEEkeywords}
 
 \input{s1-introduction}
@@ -50,7 +56,7 @@ Evolutionary algorithm, cellular automata, self-organization, self-adaptation.
 \input{s4-results}
 
 \section{Conclusion}\label{s:conclusion}
-%Experiments described herein indicate that neuroevolutionary approaches that reduce entropy, while increasing self-organization and scalability, are capable of discovering effective controllers for mobile ad hoc networks.  Moreover, we found that the evolved behaviors remained stable even when controlling different numbers of nodes than they had originally been evaluated with.  This result suggests an approach by which control of large-scale multi-agent systems might be achieved.  There are, of course, many different ways that these factors could be integrated into evolutionary algorithms.  In future work, we plan to investigate multiobjective optimization approaches for these characteristics, with a goal of achieving reliable, self-organizing, large-scale systems.
+
 \section*{Further Information and Acknowledgments}
 
 

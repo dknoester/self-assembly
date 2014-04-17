@@ -20,6 +20,20 @@ fitness_plot <- function(path) {
 	return(list(D,g))
 }
 
+## 012-1d-fsm-rl-switch
+#
+# Here we're taking an RL learning system, and re-evolving it for a different objective;
+# initial tests show that this is almost meaningless, as the RL signal appears to be strong enough
+# to guide the system entirely.
+x012 = fitness_plot("012-1d-fsm-rl-switch")
+
+## 011-1d-fsm-switch
+#
+# Here we're taking a non-RL system, and re-evolving it for the opposite objective.  This addresses
+# the question of how quickly can a self-adaptive system re-evolve for a new objective, vs. a 
+# non-self-adaptive system.
+x011 = fitness_plot("011-1d-fsm-switch")
+
 ## 010-3d-fsm-rand
 #
 x010 = fitness_plot("010-3d-fsm-rand")

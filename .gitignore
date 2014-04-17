@@ -25,3 +25,5 @@ var
 *.bbl
 *.blg
 *.toc
+*(Autosaved)*
+*main.pdf
