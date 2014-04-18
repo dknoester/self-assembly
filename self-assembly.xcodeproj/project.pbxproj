@@ -110,10 +110,10 @@
 
 /* Begin PBXFileReference section */
 		4228EF8F18EB95D500F81F81 /* ca_1d_fsm.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = ca_1d_fsm.cfg; sourceTree = "<group>"; };
-		423243D218EF1E510047D8ED /* self-assembly-ca-1d-fsm copy */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "self-assembly-ca-1d-fsm copy"; sourceTree = BUILT_PRODUCTS_DIR; };
+		423243D218EF1E510047D8ED /* self-assembly-ca-2d-fsm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "self-assembly-ca-2d-fsm"; sourceTree = BUILT_PRODUCTS_DIR; };
 		423243D318EF1E760047D8ED /* ca_2d_fsm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ca_2d_fsm.cpp; sourceTree = "<group>"; };
 		423243D718F027A30047D8ED /* ca_2d_fsm.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = ca_2d_fsm.cfg; sourceTree = "<group>"; };
-		423243E418F2331D0047D8ED /* self-assembly-ca-2d-fsm copy */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "self-assembly-ca-2d-fsm copy"; sourceTree = BUILT_PRODUCTS_DIR; };
+		423243E418F2331D0047D8ED /* self-assembly-ca-3d-fsm */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "self-assembly-ca-3d-fsm"; sourceTree = BUILT_PRODUCTS_DIR; };
 		423243E518F2333B0047D8ED /* ca_3d_fsm.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ca_3d_fsm.cpp; sourceTree = "<group>"; };
 		423243E818F233730047D8ED /* ca_3d_fsm.cfg */ = {isa = PBXFileReference; lastKnownFileType = text; path = ca_3d_fsm.cfg; sourceTree = "<group>"; };
 		42441B3E15862E1B009863BE /* Jamroot */ = {isa = PBXFileReference; lastKnownFileType = text; path = Jamroot; sourceTree = "<group>"; };
@@ -185,8 +185,8 @@
 			children = (
 				42F4EE6616AEE80D000123A4 /* self-assembly-ca-1d-fsm */,
 				42A170E018E834F500C3A248 /* self-assembly-ca-1d-ga */,
-				423243D218EF1E510047D8ED /* self-assembly-ca-1d-fsm copy */,
-				423243E418F2331D0047D8ED /* self-assembly-ca-2d-fsm copy */,
+				423243D218EF1E510047D8ED /* self-assembly-ca-2d-fsm */,
+				423243E418F2331D0047D8ED /* self-assembly-ca-3d-fsm */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -243,7 +243,7 @@
 			);
 			name = "self-assembly-ca-2d-fsm";
 			productName = "ocr-single";
-			productReference = 423243D218EF1E510047D8ED /* self-assembly-ca-1d-fsm copy */;
+			productReference = 423243D218EF1E510047D8ED /* self-assembly-ca-2d-fsm */;
 			productType = "com.apple.product-type.tool";
 		};
 		423243DA18F2331D0047D8ED /* self-assembly-ca-3d-fsm */ = {
@@ -260,7 +260,7 @@
 			);
 			name = "self-assembly-ca-3d-fsm";
 			productName = "ocr-single";
-			productReference = 423243E418F2331D0047D8ED /* self-assembly-ca-2d-fsm copy */;
+			productReference = 423243E418F2331D0047D8ED /* self-assembly-ca-3d-fsm */;
 			productType = "com.apple.product-type.tool";
 		};
 		42A170D618E834F500C3A248 /* self-assembly-ca-1d-ga */ = {
@@ -388,28 +388,24 @@
 		423243D018EF1E510047D8ED /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = "self-assembly-ca-1d-fsm copy";
 			};
 			name = Debug;
 		};
 		423243D118EF1E510047D8ED /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = "self-assembly-ca-1d-fsm copy";
 			};
 			name = Release;
 		};
 		423243E218F2331D0047D8ED /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = "self-assembly-ca-2d-fsm copy";
 			};
 			name = Debug;
 		};
 		423243E318F2331D0047D8ED /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				PRODUCT_NAME = "self-assembly-ca-2d-fsm copy";
 			};
 			name = Release;
 		};

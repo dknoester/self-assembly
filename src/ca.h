@@ -225,7 +225,11 @@ template <typename RandomAccess>
 struct reinforcement_adaptor {
     typedef typename RandomAccess::value_type value_type;
     
-    reinforcement_adaptor(RandomAccess& r, std::size_t n, value_type pos, value_type neg) : _r(r), _n(n), _pos(pos), _neg(neg) {
+    reinforcement_adaptor(RandomAccess& r, std::size_t n, value_type pos=0, value_type neg=0) : _r(r), _n(n), _pos(pos), _neg(neg) {
+    }
+    
+    void reset(value_type pos=0, value_type neg=0) {
+        _pos = pos; _neg = neg;
     }
 
     value_type operator[](std::size_t i) {

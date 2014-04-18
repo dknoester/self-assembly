@@ -31,9 +31,10 @@ using namespace ealib;
 struct cellular_automata_2d : abstract_cellular_automata {
     typedef abstract_cellular_automata parent;
     typedef torus2<int> state_container_type;
-    typedef offset_torus2<state_container_type> state_offset_type;
-    typedef adaptor_torus2<state_offset_type> adaptor_type;
-    
+    typedef offset_torus2<state_container_type> neighborhood_adaptor_type;
+    typedef adaptor_torus2<neighborhood_adaptor_type> size_adaptor_type;
+    typedef reinforcement_adaptor<size_adaptor_type> reinforcement_adaptor_type;
+
     struct callback {
         virtual void new_state(state_container_type& s) = 0;
     };
@@ -74,8 +75,16 @@ struct cellular_automata_2d : abstract_cellular_automata {
         state_container_type* pt=&S_t;
         state_container_type* ptp1=&S_tplus1;
         
+        // the below are a series of adaptors that we use to collect input for each
+        // cell as a subset of the entire world state.
+        // we also augment this input with +/- reinforcement signals:
+        neighborhood_adaptor_type neighborhood; // this lets us set the origin of a cell's neighborhood; initialized to null.
+        size_adaptor_type size_adaptor(neighborhood, 2*r+1, 2*r+1); // this changes the size of the cell's neighborhood.
+        reinforcement_adaptor_type input(size_adaptor, nin); // this augments the input with +/- reinforcement signals.
+                
         // for each initial condition:
         for(std::size_t ic=0; ic<_IC.size1(); ++ic) {
+            // clear each cell and set new initial conditions:
             for(std::size_t i=0; i<ca.size(); ++i) {
                 ca[i].clear();
             }
@@ -84,29 +93,33 @@ struct cellular_automata_2d : abstract_cellular_automata {
             pt->fill(row.begin(), row.end());
             ptp1->fill(row.begin(), row.end());
 
-            // for each update:
             int acc=0;
             int last_acc=std::accumulate(row.begin(), row.end(), 0);
             int pos=0, neg=0;
+
+            // for each update:
             for(int u=0; u<(2*m*n); ++u) {
                 if(_cb != 0) {
                     _cb->new_state(*pt);
                 }
                 bool changed=false;
                 acc=0;
+                neighborhood.reset(pt); // point the neighborhood at the right state vector
+
                 for(int i=0; i<m; ++i) {
                     for(int j=0; j<n; ++j) {
                         int agent=n*i+j; // agent's index
-                        state_offset_type offset(*pt, i-r, j-r); // offset torus to the upper left cell for this agent
-                        adaptor_type adaptor(offset, 2*r+1, 2*r+1); // adapt the torus to the size of the agent's neighborhood
-                        reinforcement_adaptor<adaptor_type> radapt(adaptor, nin, pos, neg);
-                        ca[agent].update(radapt); // update the agent
-                        (*ptp1)(i,j) = ca[agent].output(0); // get its output
-                        changed = changed || ((*pt)(i,j) != (*ptp1)(i,j)); // and check to see if anything's changed
-                        acc += (*ptp1)(i,j); // keep an accumulation of states
+                        neighborhood.reset(i-r, j-r);
+                        input.reset(pos, neg);
+                        ca[agent].update(input); // update the agent
+                        
+                        int output = ca[agent].output(0); // get its output
+                        (*ptp1)(i,j) = output;
+                        changed = changed || ((*pt)(i,j) != output); // and check to see if anything's changed
+                        acc += output; // keep an accumulation of states
                     }
                 }
-                // rotate the state vector; BE SURE to use pt!
+                // rotate the state vector; BE SURE to use pt below here!
                 std::swap(pt, ptp1);
 
                 // early stopping:

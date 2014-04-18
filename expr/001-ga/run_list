@@ -8,4 +8,7 @@ set mem_request 2
 set config_dir config
 set max_cpus 30
 
+# this experiment is a proof of concept; it replicates
+# the results from Mitchell's study, but is not itself
+# a part of this research.
 1..30 ta0 /mnt/home/dk/bin/self-assembly-ca-1d-ga -c ealib.cfg --ea.rng.seed $seed
