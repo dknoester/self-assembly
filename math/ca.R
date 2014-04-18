@@ -3,21 +3,29 @@ source("~/research/src/self-assembly/math/common.R")
 # source("~/research/src/self-assembly/math/fixup_ggplot.R")
 setwd("/Users/dk/research/src/self-assembly/var")
 
-STYLE="quick" # or "all"
+STYLE="draft" # or "final"
 
 quick_theme <- theme_bw() + theme(panel.border=element_blank(), axis.line=element_line(colour = "black",size=0.75), legend.title=element_blank()) 
 
-fitness_plot <- function(path) {
-	D = rbind(load.files(find.files("fitness.dat.gz",path=path)))
-	
-	if(STYLE=="quick") {
+
+fitness_dplot <- function(D,path) {
+	if(STYLE=="draft") {
 		D = subset(D,update%%100==0)		
 	}
 	
 	quartz(width=6,height=3.75)
-	g = ggplot(data=D, aes(x=update, y=max_fitness)) + stat_summary(aes(color=treatment,fill=treatment),fun.data="mean_cl_boot", geom="smooth") + labs(x="Update", y="Fitness") + quick_theme + ylim(0,1) + xlim(0,10000)
+	g = ggplot(data=D, aes(x=update, y=max_fitness)) + stat_summary(aes(color=treatment,fill=treatment),fun.data="mean_cl_boot", geom="smooth") + labs(x="Update", y="Fitness") + quick_theme + ylim(0,1) #+ xlim(0,10000)
+	
+	if(STYLE=="draft") {
+		g =	g + ggtitle(path)
+	}
+	
 	print(g)
 	return(list(D,g))
+}
+
+fitness_plot <- function(path) {
+	return(fitness_dplot(rbind(load.files(find.files("fitness.dat.gz",path=path))), path))
 }
 
 ## 012-1d-fsm-rl-switch
@@ -58,7 +66,7 @@ x006 = fitness_plot("006-2d-fsm-rl")
 #
 x005 = fitness_plot("005-1d-fsm-rl")
 
-## 004-3dd-fsm
+## 004-3d-fsm
 #
 x004 = fitness_plot("004-3d-fsm")
 
@@ -73,5 +81,37 @@ x002 = fitness_plot("002-1d-fsm")
 ## 001-ga
 #
 x001 = fitness_plot("001-ga")
+
+
+## majority, no RL
+dx002 = subset(x002[[1]],treatment=="tb0")
+dx002$treatment = "002-tb0"
+
+dx003 = subset(x003[[1]],treatment=="tb0")
+dx003$treatment = "003-tb0"
+
+dx004 = subset(x004[[1]],treatment=="tb0")
+dx004$treatment = "004-tb0"
+
+D = rbind(dx002, dx003, dx004)
+
+p001 = fitness_dplot(D,"p001")
+
+
+## majority, no RL
+t = "tc0"
+dx002 = subset(x002[[1]],treatment==t)
+dx002$treatment = "002-tb0"
+
+dx003 = subset(x003[[1]],treatment==t)
+dx003$treatment = "003-tb0"
+
+dx004 = subset(x004[[1]],treatment==t)
+dx004$treatment = "004-tb0"
+
+D = rbind(dx002, dx003, dx004)
+
+#p001 = fitness_dplot(D,"p001-123d-prob")
+p002 = fitness_dplot(D,"p001-123d-adapt")
 
 
