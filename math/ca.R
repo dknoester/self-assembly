@@ -2,6 +2,7 @@ library(ggplot2)
 source("~/research/src/self-assembly/math/common.R")
 # source("~/research/src/self-assembly/math/fixup_ggplot.R")
 setwd("/Users/dk/research/src/self-assembly/var")
+figpath = "/Users/dk/research/src/self-assembly/doc/saso2014/figures/"
 
 STYLE="draft" # or "final"
 
@@ -26,6 +27,13 @@ fitness_dplot <- function(D,path) {
 
 fitness_plot <- function(path) {
 	return(fitness_dplot(rbind(load.files(find.files("fitness.dat.gz",path=path))), path))
+}
+
+savefig <- function(x, name) {
+	f = paste(figpath,name,".pdf",sep="")
+	pdf(file=f, width=6, height=3.75)
+	print(x[[2]])
+	dev.off()
 }
 
 ## 012-1d-fsm-rl-switch
@@ -77,6 +85,13 @@ x003 = fitness_plot("003-2d-fsm")
 ## 002-1d-fsm
 #
 x002 = fitness_plot("002-1d-fsm")
+savefig(x002,"x002-fitness")
+
+savefig(paste(figpath,"x002-fitness",sep=""), width=6, height=3.75, type="pdf")
+
+dev.copy(pdf,filename=paste(figpath,"x002-fitness",sep=""), width=6, height=3.75)
+dev.off()
+cat(figpath,"x002-fitness.pdf",sep="")
 
 ## 001-ga
 #

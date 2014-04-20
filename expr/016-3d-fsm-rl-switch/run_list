@@ -1,0 +1,15 @@
+set description 016-3d-fsm-rl-switch
+set email dk@msu.edu
+set freq_email Crash
+set priority 3
+set class_pref 99
+set walltime 96
+set mem_request 2
+set config_dir config
+set max_cpus 30
+
+1..30 ta0 /mnt/home/dk/bin/self-assembly-ca-3d-fsm -l /mnt/home/dk/src/self-assembly/expr/007-3d-fsm-rl/ta0_$seed/checkpoint-10000.xml.gz --override --self_assembly.ca.direction=1 --reset
+
+1..30 tb0 /mnt/home/dk/bin/self-assembly-ca-3d-fsm -l /mnt/home/dk/src/self-assembly/expr/007-3d-fsm-rl/tb0_$seed/checkpoint-10000.xml.gz --override --self_assembly.ca.direction=1 --reset
+
+1..30 tc0 /mnt/home/dk/bin/self-assembly-ca-3d-fsm -l /mnt/home/dk/src/self-assembly/expr/007-3d-fsm-rl/tc0_$seed/checkpoint-10000.xml.gz --override --self_assembly.ca.direction=1 --reset

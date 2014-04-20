@@ -1,0 +1,22 @@
+001-ga: defunct, replicate of Mitchell.
+
+4/18/2014 @ 11am:
+002-1d-fsm: running, dk
+
+003-2d-fsm: running, dk
+
+004-3d-fsm: running, hjg
+
+005-1d-fsm-rl: running, hjg
+
+006-2d-fsm-rl: running, dk
+
+007-3d-fsm-rl: running, dk
+
+008-1d-fsm-rand: running, hjg
+
+009-2d-fsm-rand: running, hjg
+
+010-3d-fsm-rand
+011-1d-fsm-switch
+012-1d-fsm-rl-switch

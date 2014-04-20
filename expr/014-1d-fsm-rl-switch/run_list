@@ -1,4 +1,4 @@
-set description 012-1d-fsm-rl-switch
+set description 014-1d-fsm-rl-switch
 set email dk@msu.edu
 set freq_email Crash
 set priority 3
