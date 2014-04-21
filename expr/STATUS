@@ -2,21 +2,19 @@
 
 4/18/2014 @ 11am:
 002-1d-fsm: running, dk
-
 003-2d-fsm: running, dk
-
 004-3d-fsm: running, hjg
-
 005-1d-fsm-rl: running, hjg
-
 006-2d-fsm-rl: running, dk
-
 007-3d-fsm-rl: running, dk
-
 008-1d-fsm-rand: running, hjg
-
 009-2d-fsm-rand: running, hjg
+010-3d-fsm-rand: running, dk
+011-1d-fsm-switch: running, dk & hjg
+012-2d-fsm-switch: running, hjg
 
-010-3d-fsm-rand
-011-1d-fsm-switch
-012-1d-fsm-rl-switch
+## don't forget to check where the checkpoints live!
+013-3d-fsm-switch: running, dk
+014-1d-fsm-rl-switch: running, hjg
+015-2d-fsm-rl-switch: running, dk
+016-3d-fsm-rl-switch: running, hjg

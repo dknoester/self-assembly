@@ -5,17 +5,18 @@ setwd("/Users/dk/research/src/self-assembly/var")
 figpath = "/Users/dk/research/src/self-assembly/doc/saso2014/figures/"
 
 STYLE="draft" # or "final"
+WIDTH=6
+HEIGHT=3.75
 
-quick_theme <- theme_bw() + theme(panel.border=element_blank(), axis.line=element_line(colour = "black",size=0.75), legend.title=element_blank()) 
-
+quick_theme <- theme_bw() + theme(panel.border=element_blank(), axis.line=element_line(colour = "black",size=0.75), legend.title=element_blank(), legend.justification=c(1,0), legend.position=c(1,0))
 
 fitness_dplot <- function(D,path) {
 	if(STYLE=="draft") {
 		D = subset(D,update%%100==0)		
 	}
 	
-	quartz(width=6,height=3.75)
-	g = ggplot(data=D, aes(x=update, y=max_fitness)) + stat_summary(aes(color=treatment,fill=treatment),fun.data="mean_cl_boot", geom="smooth") + labs(x="Update", y="Fitness") + quick_theme + ylim(0,1) #+ xlim(0,10000)
+	quartz(width=WIDTH,height=HEIGHT)
+	g = ggplot(data=D, aes(x=update, y=max_fitness)) + stat_summary(aes(color=treatment,fill=treatment),fun.data="mean_cl_boot", geom="smooth") + labs(x="Update", y="Fitness") + quick_theme + ylim(0.5,1) #+ xlim(0,10000)
 	
 	if(STYLE=="draft") {
 		g =	g + ggtitle(path)
@@ -31,7 +32,7 @@ fitness_plot <- function(path) {
 
 savefig <- function(x, name) {
 	f = paste(figpath,name,".pdf",sep="")
-	pdf(file=f, width=6, height=3.75)
+	pdf(file=f, width=WIDTH, height=HEIGHT)
 	print(x[[2]])
 	dev.off()
 }
@@ -77,21 +78,17 @@ x005 = fitness_plot("005-1d-fsm-rl")
 ## 004-3d-fsm
 #
 x004 = fitness_plot("004-3d-fsm")
+savefig(x004,"x004-fitness")
 
 ## 003-2d-fsm
 #
 x003 = fitness_plot("003-2d-fsm")
+savefig(x003,"x003-fitness")
 
 ## 002-1d-fsm
 #
 x002 = fitness_plot("002-1d-fsm")
 savefig(x002,"x002-fitness")
-
-savefig(paste(figpath,"x002-fitness",sep=""), width=6, height=3.75, type="pdf")
-
-dev.copy(pdf,filename=paste(figpath,"x002-fitness",sep=""), width=6, height=3.75)
-dev.off()
-cat(figpath,"x002-fitness.pdf",sep="")
 
 ## 001-ga
 #
