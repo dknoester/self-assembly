@@ -3,52 +3,100 @@
 
 % intro
 
-\subsection{Majority sequence}
+%%%% 
+% show that this approach is, in general, effective at discovering cellular automata.
+\subsection{Bit consensus in n dimensions}
 
-Having introduced three different potential control approaches for cells in a CA, here we present results for these different mechanisms on n-dimensional CAs.
+\CalloutFigure{f:002-fitness} shows the maximum fitness over time for 30 replicates each of three different experimental treatments: {\em logic}, {\em probabilistic}, and {\em adaptive}, each on a 1D cellular automata.  As shown here, fitness improves rapidly over time, eventually reaching a level of approximately 0.95 (recall that fitness is the correct fraction of 100 initial conditions).  \CalloutFigure{f:003-fitness} and \CalloutFigure{f:004-fitness} depict the results for 2- and 3-dimensions, respectively.  Taken together, these results indicate that this approach to discovering control strategies for cellular automata is quite effective.  Indeed, the results in 3-dimensions are the first known example of a bit-consensus controller for 3D CAs.
 
-\CalloutFigure{?} depicts fitness over time for 1-D CAs.  In general, 
-
-\begin{figure}[htb]
+\begin{figure}
 \centering\includegraphics[width=\HalfPage]{x002-fitness}
 \caption{}
-\label{f:2-fixed-movement}
+\label{f:002-fitness}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}
 \centering\includegraphics[width=\HalfPage]{x003-fitness}
 \caption{}
-\label{f:2-fixed-movement}
+\label{f:003-fitness}
 \end{figure}
 
-\begin{figure}[htb]
+\begin{figure}
 \centering\includegraphics[width=\HalfPage]{x004-fitness}
 \caption{}
-\label{f:2-fixed-movement}
+\label{f:004-fitness}
 \end{figure}
 
-% go over 1,2,3d baseline results, non-adaptive; all's well
+\CalloutFigure{f:002-detail} depicts the state of the cellular automata over time for the dominant (most fit) individual from the 1d CA.  This illustration shows how information from different regions of the state vector are used to produce coherent changes over time.
+% + Mitchell
 
-% proof of self-organization
+\begin{figure}
+\centering\includegraphics[width=\HalfPage]{x002-fitness}
+\caption{}
+\label{f:002-detail}
+\end{figure}
+
+\CalloutFigure{f:003-detail} depicts CA state in 2d; here we present a number of frames from a movie, the entirety of which can be found here: \url{?}.  Though somewhat more difficult to see in 2d, there are similarities apparent between the strategy shown in 1d and here, particularly in the ``wavefront'' style activations.
+
+\begin{figure}
+\centering\includegraphics[width=\HalfPage]{x003-fitness}
+\caption{}
+\label{f:003-detail}
+\end{figure}
+
+Finally, \CalloutFigure{f::004-detail} depicts CA state in 3d; we again present a number of frames from a movie, which can be found here: \url{?}.
+
+\begin{figure}
+\centering\includegraphics[width=\HalfPage]{x004-fitness}
+\caption{}
+\label{f:004-detail}
+\end{figure}
 
 
-\subsection{Self-adaptive gates}
+%%%%
+% show that the evolved solutions are, in fact, self-organizing, and that they have properties that are desirable in SO systems: scalable, resilient
+\subsection{Self-organization}
 
-%%% is adaptation helping or even being used?
-% fix reset bug
-% run control w/ adaptation disabled, +replaced by random signal? -- show this in analysis
-% proof of adaptation
+We can test for self-organization as a property by manipulating the communication channel(s) between cells in the CA.  Specifically, if a given CA is self-organized, its performance {\em in the absence} of communication will be significantly less than if communication is allowed.  \CalloutFigure{f:selforg} depicts the unit function \dk{see manet paper} for self-organization on each of the dominant solutions from all treatments in 1-, 2-, and 3-dimensions.
+% use 0; no information
 
-\subsection{Globally-derived RL signal}
-% perhaps unrealistic?
-% however, if a delta w signal can be generated from t to t+1, then this might provide enough of a direction for the system as a whole to recover
-% note: this form of CA is able to include additional information that can guide rule selection (e.g., an RL signal)
+\begin{figure}
+\centering\includegraphics[width=\HalfPage]{x002-fitness}
+\caption{}
+\label{f:selforg}
+\end{figure}
 
-%the RL example is more interesting than thought: it's a global signal, not individual to the cell; each cell must somehow detangle what it did w.r.t. global signal
+% scalability
+A key desirable characteristic of self-organizing systems is that they scale to larger instances without code changes.  \CalloutFigure{f:scalability} depicts the scalability of dominant individuals from each of the different treatments over a range of different CA sizes.  As seen here, the evolved solutions are highly scalable, in some cases scaling multiple orders of magnitude above their evolved size with no decline in performance.
 
-\subsection{Effect of state perturbations} % not sure about this one...
+\begin{figure}
+\centering\includegraphics[width=\HalfPage]{x002-fitness}
+\caption{}
+\label{f:scalability}
+\end{figure}
 
-% in analysis, during trial: perturb state vector (invert w/ scalable p)?
+% resilience
+A key characteristic of SASO systems is that they are resilient in the face of environmental disturbances.  Here, we can model such conditions by perturbing the state vector of a CA over time.  With a configurable probability, here we examine the effect of randomly changing the state vector at a single point in time {\em after} the CA has reached a stable solution.  Depending on the probability of noise, this should still result in the CA reaching the correct solution.  Results are shown in \CalloutFigure{f:resilience}
+% use random; noise
+
+\begin{figure}
+\centering\includegraphics[width=\HalfPage]{x002-fitness}
+\caption{}
+\label{f:resilience}
+\end{figure}
+
+%%%%
+% show that (some approaches) are also self-adaptive
+\subsection{Self-adaptation}
+
+1P: is self-adaptation being used?  if so, there's an endogenous RL signal that the state machine is generating.  what happens when that RL signal is external?
+
+2P: performance when an external RL signal is available; this is more interesting than thought: it's a global signal, not individual to the cell; each cell must somehow detangle what it did w.r.t. global signal
+
+3P: two ways to handle this: incorporate changing goals into fitness function (anticipated adaptation), or re-evolve to meet new goal (unanticipated adaptation).
+
+
+
 
 
 

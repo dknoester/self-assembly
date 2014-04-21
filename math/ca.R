@@ -1,4 +1,5 @@
 library(ggplot2)
+library(plyr)
 source("~/research/src/self-assembly/math/common.R")
 # source("~/research/src/self-assembly/math/fixup_ggplot.R")
 setwd("/Users/dk/research/src/self-assembly/var")
@@ -10,6 +11,10 @@ HEIGHT=3.75
 
 quick_theme <- theme_bw() + theme(panel.border=element_blank(), axis.line=element_line(colour = "black",size=0.75), legend.title=element_blank(), legend.justification=c(1,0), legend.position=c(1,0))
 
+
+# Plot the fitness of D by treatment.
+#
+#
 fitness_dplot <- function(D,path) {
 	if(STYLE=="draft") {
 		D = subset(D,update%%100==0)		
@@ -26,10 +31,14 @@ fitness_dplot <- function(D,path) {
 	return(list(D,g))
 }
 
+# Load data and plot fitness by treatment.
+#
 fitness_plot <- function(path) {
 	return(fitness_dplot(rbind(load.files(find.files("fitness.dat.gz",path=path))), path))
 }
 
+# Save figure x in in PDF format.
+#
 savefig <- function(x, name) {
 	f = paste(figpath,name,".pdf",sep="")
 	pdf(file=f, width=WIDTH, height=HEIGHT)
@@ -37,12 +46,18 @@ savefig <- function(x, name) {
 	dev.off()
 }
 
+data_summary <- function(x) {
+	cat("Max fitness:\n")
+	print(x[[1]][which.max(x[[1]]$max_fitness),])
+}
+
+
 ## 012-1d-fsm-rl-switch
 #
 # Here we're taking an RL learning system, and re-evolving it for a different objective;
 # initial tests show that this is almost meaningless, as the RL signal appears to be strong enough
 # to guide the system entirely.
-x012 = fitness_plot("012-1d-fsm-rl-switch")
+x012 = fitness_plot("012-2d-fsm-switch")
 
 ## 011-1d-fsm-switch
 #
@@ -78,17 +93,32 @@ x005 = fitness_plot("005-1d-fsm-rl")
 ## 004-3d-fsm
 #
 x004 = fitness_plot("004-3d-fsm")
-savefig(x004,"x004-fitness")
+# savefig(x004,"x004-fitness")
 
 ## 003-2d-fsm
 #
 x003 = fitness_plot("003-2d-fsm")
-savefig(x003,"x003-fitness")
+# savefig(x003,"x003-fitness")
 
 ## 002-1d-fsm
 #
 x002 = fitness_plot("002-1d-fsm")
-savefig(x002,"x002-fitness")
+# savefig(x002,"x002-fitness")
+data_summary(x002)
+which.max(x002[[1]])
+
+count(x002[[1]]$treatment)
+
+
+
+
+
+
+
+
+
+
+
 
 ## 001-ga
 #
