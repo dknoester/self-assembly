@@ -1,5 +1,6 @@
 library(ggplot2)
 library(plyr)
+library(stringr)
 source("~/research/src/self-assembly/math/common.R")
 # source("~/research/src/self-assembly/math/fixup_ggplot.R")
 setwd("/Users/dk/research/src/self-assembly/var")
@@ -50,6 +51,30 @@ data_summary <- function(x) {
 	cat("Max fitness:\n")
 	print(x[[1]][which.max(x[[1]]$max_fitness),])
 }
+
+
+D = load.files(find.files("fitness.dat.gz"))
+
+S = subset(D,treatment=="ta0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
+
+
+g = ggplot(data=subset(S,update%%100==0), aes(x=update, y=max_fitness)) + stat_summary(aes(color=expr,fill=expr),fun.data="mean_cl_boot", geom="smooth") + labs(x="Update", y="Fitness") + quick_theme + ylim(0.5,1) #+ xlim(0,10000)
+g
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## 012-1d-fsm-rl-switch
@@ -113,7 +138,18 @@ count(x002[[1]]$treatment)
 
 
 
+find.files("fitness.dat.gz",path=)
 
+
+	return(fitness_dplot(rbind(load.files(find.files("fitness.dat.gz",path=path))), path))
+
+
+
+# Load data and plot fitness by treatment.
+#
+fitness_plot <- function(path) {
+	return(fitness_dplot(rbind(load.files(find.files("fitness.dat.gz",path=path))), path))
+}
 
 
 
