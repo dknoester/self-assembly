@@ -53,17 +53,39 @@ data_summary <- function(x) {
 }
 
 
+expr_fitness <- function(D,t) {
+	if(STYLE=="draft") {
+		D = subset(D,update%%100==0)		
+	}
+	
+	quartz(width=WIDTH,height=HEIGHT)
+	g = ggplot(data=D, aes(x=update, y=max_fitness)) + stat_summary(aes(color=expr,fill=expr),fun.data="mean_cl_boot", geom="smooth") + labs(x="Update", y="Fitness") + quick_theme + ylim(0.5,1) #+ xlim(0,10000)
+	
+	if(STYLE=="draft") {
+		g =	g + ggtitle(t)
+	}
+	
+	return(g)
+}
+
+
 D = load.files(find.files("fitness.dat.gz"))
 
-S = subset(D,treatment=="ta0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
+S1 = subset(D,treatment=="ta0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
+S2 = subset(D,treatment=="tb0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
+S3 = subset(D,treatment=="tc0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
+S4 = subset(D,treatment=="ta0" & (expr=="008-1d-fsm-rand" | expr=="009-2d-fsm-rand" | expr=="010-3d-fsm-rand"))
+S5 = subset(D,treatment=="tb0" & (expr=="008-1d-fsm-rand" | expr=="009-2d-fsm-rand" | expr=="010-3d-fsm-rand"))
+S6 = subset(D,treatment=="tc0" & (expr=="008-1d-fsm-rand" | expr=="009-2d-fsm-rand" | expr=="010-3d-fsm-rand"))
 
 
-g = ggplot(data=subset(S,update%%100==0), aes(x=update, y=max_fitness)) + stat_summary(aes(color=expr,fill=expr),fun.data="mean_cl_boot", geom="smooth") + labs(x="Update", y="Fitness") + quick_theme + ylim(0.5,1) #+ xlim(0,10000)
-g
+expr_fitness(S1,"base ta0")
+# expr_fitness(S2,"base tb0")
+# expr_fitness(S3,"base tc0")
 
-
-
-
+expr_fitness(S4,"rl ta0")
+# expr_fitness(S5,"rl tb0")
+# expr_fitness(S6,"rl tc0")
 
 
 

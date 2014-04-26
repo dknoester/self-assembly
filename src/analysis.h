@@ -46,6 +46,22 @@ LIBEA_ANALYSIS_TOOL(ca_dom_1000x) {
     df.write(static_cast<double>(ealib::fitness(*i,ea))).endl();
 }
 
+
+LIBEA_ANALYSIS_TOOL(ca_all_100x) {
+    datafile df("ca_all_1000x.dat");
+    df.add_field("individual").add_field("w0").add_field("w1");
+    
+    put<CA_IC_TYPE>(1,ea);
+    put<CA_SAMPLES>(100,ea);
+    initialize_fitness_function(ea.fitness_function(), ea);
+    
+    for(typename EA::iterator i=ea.begin(); i!=ea.end(); ++i) {
+        df.write(get<IND_NAME>(*i)).write(static_cast<double>(ealib::fitness(*i,ea)));
+        recalculate_fitness(*i,ea);
+        df.write(static_cast<double>(ealib::fitness(*i,ea))).endl();
+    }
+}
+
 LIBEA_ANALYSIS_TOOL(ca_dom_na_1000x) {
     // get the dominant:
     typename EA::iterator i=analysis::dominant(ea);
@@ -60,26 +76,54 @@ LIBEA_ANALYSIS_TOOL(ca_dom_na_1000x) {
     recalculate_fitness(*i,ea);
     df.write(static_cast<double>(ealib::fitness(*i,ea)));
     
-    ealib::phenotype(*i,ea).disable_adaptation(); // turn off adaptation
+    put<CA_DISABLE_ADAPTATION>(1,ea);
     recalculate_fitness(*i,ea);
     df.write(static_cast<double>(ealib::fitness(*i,ea))).endl();
 }
 
-LIBEA_ANALYSIS_TOOL(ca_all_1000x) {
-    datafile df("ca_all_1000x.dat");
-    df.add_field("individual").add_field("w0").add_field("w1");
+
+//! Callback used to apply noise to the state container.
+template <typename FitnessFunction, typename RandomNumberGenerator>
+struct noise_callback : public FitnessFunction::callback {
+    noise_callback(RandomNumberGenerator& rng, double p, datafile& df) : _rng(rng), _p(p), _df(df) {
+    }
+    
+    virtual void new_state(typename FitnessFunction::state_container_type& s) {
+        for(typename FitnessFunction::state_container_type::iterator i=s.begin(); i!=s.end(); ++i) {
+            if(_rng.p(_p)) {
+                (*i) ^= 0x01;
+            }
+        }
+    }
+    
+    RandomNumberGenerator& _rng;
+    double _p;
+    datafile& _df;
+};
+
+//! Analysis tool to apply noise to state machine inputs.
+LIBEA_ANALYSIS_TOOL(ca_noise) {
+    // get the dominant:
+    typename EA::iterator ind=analysis::dominant(ea);
     
     put<CA_IC_TYPE>(1,ea);
-    put<CA_SAMPLES>(1000,ea);
+    put<CA_SAMPLES>(100,ea);
     initialize_fitness_function(ea.fitness_function(), ea);
-
-    for(typename EA::iterator i=ea.begin(); i!=ea.end(); ++i) {
-        df.write(get<IND_NAME>(*i)).write(static_cast<double>(ealib::fitness(*i,ea)));
-        recalculate_fitness(*i,ea);
-        df.write(static_cast<double>(ealib::fitness(*i,ea))).endl();
+    
+    datafile df("ca_noise.dat");
+    df.add_field("noise_p").add_field("w");
+    df.comment("individual: " + boost::lexical_cast<std::string>(get<IND_NAME>(*ind)));
+    
+    for(double noise=0.0; noise <= 1.0; noise += 0.02) {
+        noise_callback<typename EA::fitness_function_type, typename EA::rng_type> cb(ea.rng(), noise, df);
+        ea.fitness_function().reset_callback(&cb);
+        recalculate_fitness(*ind,ea);
+        df.write(noise).write(static_cast<double>(ealib::fitness(*ind,ea))).endl();
     }
 }
 
+
+//! Callback used to record a frame for a movie.
 template <typename FitnessFunction>
 struct movie_callback : public FitnessFunction::callback {
     movie_callback(datafile& df) : _df(df) {
@@ -92,8 +136,8 @@ struct movie_callback : public FitnessFunction::callback {
     datafile& _df;
 };
 
+//! Analysis tool to generate a movie.
 LIBEA_ANALYSIS_TOOL(ca_movie) {
-    // get the dominant:
     typename EA::iterator ind=analysis::dominant(ea);
     
     put<CA_IC_TYPE>(1,ea);

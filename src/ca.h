@@ -48,6 +48,7 @@ LIBEA_MD_DECL(CA_IC_TYPE, "self_assembly.ca.initial_condition_type", int);
 LIBEA_MD_DECL(CA_SAMPLES, "self_assembly.ca.samples", int);
 LIBEA_MD_DECL(CA_REINFORCE, "self_assembly.ca.reinforcement", int);
 LIBEA_MD_DECL(CA_DIRECTION, "self_assembly.ca.direction", int);
+LIBEA_MD_DECL(CA_DISABLE_ADAPTATION, "self_assembly.ca.disable_adaptation", int);
 
 #include "analysis.h"
 
@@ -83,7 +84,8 @@ public:
     virtual void gather_tools() {
         add_tool<ca_dom_1000x>(this);
         add_tool<ca_dom_na_1000x>(this);
-        add_tool<ca_all_1000x>(this);
+        add_tool<ca_all_100x>(this);
+        add_tool<ca_noise>(this);
         add_tool<ca_movie>(this);
     }
     

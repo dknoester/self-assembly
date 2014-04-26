@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "423243C818EF1E510047D8ED"
-               BuildableName = "self-assembly-ca-1d-fsm copy"
+               BuildableName = "self-assembly-ca-2d-fsm"
                BlueprintName = "self-assembly-ca-2d-fsm"
                ReferencedContainer = "container:self-assembly.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "423243C818EF1E510047D8ED"
-            BuildableName = "self-assembly-ca-1d-fsm copy"
+            BuildableName = "self-assembly-ca-2d-fsm"
             BlueprintName = "self-assembly-ca-2d-fsm"
             ReferencedContainer = "container:self-assembly.xcodeproj">
          </BuildableReference>
@@ -53,7 +53,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "423243C818EF1E510047D8ED"
-            BuildableName = "self-assembly-ca-1d-fsm copy"
+            BuildableName = "self-assembly-ca-2d-fsm"
             BlueprintName = "self-assembly-ca-2d-fsm"
             ReferencedContainer = "container:self-assembly.xcodeproj">
          </BuildableReference>
@@ -85,7 +85,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "423243C818EF1E510047D8ED"
-            BuildableName = "self-assembly-ca-1d-fsm copy"
+            BuildableName = "self-assembly-ca-2d-fsm"
             BlueprintName = "self-assembly-ca-2d-fsm"
             ReferencedContainer = "container:self-assembly.xcodeproj">
          </BuildableReference>

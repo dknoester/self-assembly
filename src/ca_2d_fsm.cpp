@@ -68,6 +68,9 @@ struct cellular_automata_2d : abstract_cellular_automata {
         std::vector<typename EA::phenotype_type> ca(m*n, ealib::phenotype(ind, ea));
         for(std::size_t i=0; i<ca.size(); ++i) {
             ca[i].reset(rng.seed());
+            if(get<CA_DISABLE_ADAPTATION>(ea,0)) {
+                ca[i].disable_adaptation();
+            }
         }
         
         state_container_type S_t(m, n, 0);

@@ -10,90 +10,134 @@
 \CalloutFigure{f:002-fitness} shows the maximum fitness over time for 30 replicates each of three different experimental treatments: {\em logic}, {\em probabilistic}, and {\em adaptive}, each on a 1D cellular automata.  As shown here, fitness improves rapidly over time, eventually reaching a level of approximately 0.95 (recall that fitness is the correct fraction of 100 initial conditions).  \CalloutFigure{f:003-fitness} and \CalloutFigure{f:004-fitness} depict the results for 2- and 3-dimensions, respectively.  Taken together, these results indicate that this approach to discovering control strategies for cellular automata is quite effective.  Indeed, the results in 3-dimensions are the first known example of a bit-consensus controller for 3D CAs.
 
 \begin{figure}
-\centering\includegraphics[width=\HalfPage]{x002-fitness}
-\caption{}
+\centering\includegraphics[width=\HalfPage]{x001-nonadaptive-fitness}
+\caption{Mean fitness over time for 1-, 2-, and 3-D cellular automata.}
 \label{f:002-fitness}
-\end{figure}
-
-\begin{figure}
-\centering\includegraphics[width=\HalfPage]{x003-fitness}
-\caption{}
-\label{f:003-fitness}
-\end{figure}
-
-\begin{figure}
-\centering\includegraphics[width=\HalfPage]{x004-fitness}
-\caption{}
-\label{f:004-fitness}
 \end{figure}
 
 \CalloutFigure{f:002-detail} depicts the state of the cellular automata over time for the dominant (most fit) individual from the 1d CA.  This illustration shows how information from different regions of the state vector are used to produce coherent changes over time.
 % + Mitchell
 
 \begin{figure}
-\centering\includegraphics[width=\HalfPage]{x002-fitness}
-\caption{}
+%\centering\includegraphics[width=\HalfPage]{x002-fitness}
+\vspace{10em}
+\caption{Exemplar 1D CA.}
 \label{f:002-detail}
 \end{figure}
 
 \CalloutFigure{f:003-detail} depicts CA state in 2d; here we present a number of frames from a movie, the entirety of which can be found here: \url{?}.  Though somewhat more difficult to see in 2d, there are similarities apparent between the strategy shown in 1d and here, particularly in the ``wavefront'' style activations.
 
 \begin{figure}
-\centering\includegraphics[width=\HalfPage]{x003-fitness}
-\caption{}
+%\centering\includegraphics[width=\HalfPage]{x003-fitness}
+\vspace{10em}
+\caption{Exemplar 2D CA.}
 \label{f:003-detail}
 \end{figure}
 
 Finally, \CalloutFigure{f::004-detail} depicts CA state in 3d; we again present a number of frames from a movie, which can be found here: \url{?}.
 
 \begin{figure}
-\centering\includegraphics[width=\HalfPage]{x004-fitness}
-\caption{}
+%\centering\includegraphics[width=\HalfPage]{x004-fitness}
+\vspace{10em}
+\caption{Exemplar 3D CA.}
 \label{f:004-detail}
 \end{figure}
 
 
+
 %%%%
 % show that the evolved solutions are, in fact, self-organizing, and that they have properties that are desirable in SO systems: scalable, resilient
-\subsection{Self-organization}
+\subsection{Properties of evolved solutions}
 
-We can test for self-organization as a property by manipulating the communication channel(s) between cells in the CA.  Specifically, if a given CA is self-organized, its performance {\em in the absence} of communication will be significantly less than if communication is allowed.  \CalloutFigure{f:selforg} depicts the unit function \dk{see manet paper} for self-organization on each of the dominant solutions from all treatments in 1-, 2-, and 3-dimensions.
-% use 0; no information
+\paragraph{Self-organization}
+We can test for self-organization as a property by manipulating the communication channel(s) between cells in the CA.  Specifically, if a given CA is self-organized, its performance {\em in the absence} of communication will be significantly less than if communication is allowed.  \CalloutFigure{f:selforg} depicts the unit function \dk{see manet paper} for self-organization on each of the dominant solutions from all treatments in 1-, 2-, and 3-dimensions.  In this case, we turn off communication by holding the initial condition constant for a number of CA updates.
+% use 0; no information; this probably doesn't require a plot, as it must be nearly impossible to perform this task w/o communication.  run the test anyway, though.
 
 \begin{figure}
-\centering\includegraphics[width=\HalfPage]{x002-fitness}
-\caption{}
+%\centering\includegraphics[width=\HalfPage]{x002-fitness}
+\vspace{10em}
+\caption{Boxplot showing effect of holding inputs to FSMs at 0.}
 \label{f:selforg}
 \end{figure}
 
-% scalability
-A key desirable characteristic of self-organizing systems is that they scale to larger instances without code changes.  \CalloutFigure{f:scalability} depicts the scalability of dominant individuals from each of the different treatments over a range of different CA sizes.  As seen here, the evolved solutions are highly scalable, in some cases scaling multiple orders of magnitude above their evolved size with no decline in performance.
-
-\begin{figure}
-\centering\includegraphics[width=\HalfPage]{x002-fitness}
-\caption{}
-\label{f:scalability}
-\end{figure}
-
-% resilience
+\paragraph{Resilience}
 A key characteristic of SASO systems is that they are resilient in the face of environmental disturbances.  Here, we can model such conditions by perturbing the state vector of a CA over time.  With a configurable probability, here we examine the effect of randomly changing the state vector at a single point in time {\em after} the CA has reached a stable solution.  Depending on the probability of noise, this should still result in the CA reaching the correct solution.  Results are shown in \CalloutFigure{f:resilience}
 % use random; noise
 
 \begin{figure}
-\centering\includegraphics[width=\HalfPage]{x002-fitness}
-\caption{}
+%\centering\includegraphics[width=\HalfPage]{x002-fitness}
+\vspace{10em}
+\caption{Run until done; add P(noise), run until done.}
 \label{f:resilience}
+\end{figure}
+
+\paragraph{Scalability}
+A key desirable characteristic of self-organizing systems is that they scale to larger instances without code changes.  \CalloutFigure{f:scalability} depicts the scalability of dominant individuals from each of the different treatments over a range of different CA sizes.  As seen here, the evolved solutions are highly scalable, in some cases scaling multiple orders of magnitude above their evolved size with no decline in performance.
+
+\begin{figure}
+%\centering\includegraphics[width=\HalfPage]{x002-fitness}
+\vspace{10em}
+\caption{Scalability; how to show this?.}
+\label{f:scalability}
 \end{figure}
 
 %%%%
 % show that (some approaches) are also self-adaptive
 \subsection{Self-adaptation}
 
-1P: is self-adaptation being used?  if so, there's an endogenous RL signal that the state machine is generating.  what happens when that RL signal is external?
+%
+%1P: is self-adaptation being used?  if so, there's an endogenous RL signal that the state machine is generating.  what happens when that RL signal is external?
+%
+%2P: performance when an external RL signal is available; this is more interesting than thought: it's a global signal, not individual to the cell; each cell must somehow detangle what it did w.r.t. global signal
+%
+%3P: two ways to handle this: incorporate changing goals into fitness function (anticipated adaptation), or re-evolve to meet new goal (unanticipated adaptation).
+%
+%
 
-2P: performance when an external RL signal is available; this is more interesting than thought: it's a global signal, not individual to the cell; each cell must somehow detangle what it did w.r.t. global signal
+\paragraph{Unanticipated adaptation}
+SA is nothing more than a change in strategy -- that is, phenotypic plasticity as the result of some environmental signal.
+now, there are multiple kinds of SA; anticipated, where a lever point of some kind is engineered into the system, and unanticipated, where the system must be reconfigured ``on the fly'' into behaving differently than it was originally designed.
+in the context of an evolutionary algorithm, unanticipated change is accounted for by restarting the evolutionary process with a different fitness function
+e.g., as shown in figure x, here we restart the EA with a FF that rewards for finding the minority sequence.
+While this provides one mechanism for dealing with unanticipated change, the more interesting case is when some kind of change is anticipated.
 
-3P: two ways to handle this: incorporate changing goals into fitness function (anticipated adaptation), or re-evolve to meet new goal (unanticipated adaptation).
+\begin{figure}
+%\centering\includegraphics[width=\HalfPage]{x002-fitness}
+\vspace{10em}
+\caption{Unanticipated adaptation -- re-evolution.}
+\label{f:scalability}
+\end{figure}
+
+
+
+\paragraph{Anticipated adaptation}
+
+ anticipated change, OTOH, is dealt with by altering the FF to include a feedback signal that enables the CA to change its behavior at runtime.
+ i.e., by introducing a signal from the env that indicates to the CA whether or not the delta from time t-1 to time t is in the right direction.
+As shown in figure y, here we see that the CA is able to alter its behavior, at run time, in response to an RL signal from the environment.
+In biology, this might be called {\em phenotypic plasticity}.
+Here we note that the EA has solved {\em two} problems: first, how to self-organize to solve ether minority or majority bit consensus, and second, how to incorporate a global RL signal into local computation.
+
+\begin{figure}
+\centering\includegraphics[width=\HalfPage]{x002-reinforcement-fitness}
+\caption{Mean fitness over time for 1-, 2-, and 3-D cellular automata, with a reinforcement learning signal applied.}
+\label{f:003-fitness}
+\end{figure}
+
+% evidence of SA in this case is shown by turning off the RL signal, and seeing what, if any, fitness effects there might be on either majority, minority, or random consensus problems.
+
+\begin{figure}
+%\centering\includegraphics[width=\HalfPage]{x002-fitness}
+\vspace{10em}
+\caption{Anticipated adaptation, box plot showing effect of RL signal.}
+\label{f:scalability}
+\end{figure}
+
+
+
+
+
+
 
 
 

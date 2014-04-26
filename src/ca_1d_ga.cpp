@@ -209,7 +209,6 @@ public:
     //! Define tools here.
     virtual void gather_tools() {
         add_tool<ca_dom_1000x>(this);
-        add_tool<ca_all_1000x>(this);
         add_tool<ca_movie>(this);
     }
     
