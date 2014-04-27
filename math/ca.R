@@ -43,7 +43,7 @@ fitness_plot <- function(path) {
 savefig <- function(x, name) {
 	f = paste(figpath,name,".pdf",sep="")
 	pdf(file=f, width=WIDTH, height=HEIGHT)
-	print(x[[2]])
+	print(x)
 	dev.off()
 }
 
@@ -58,7 +58,6 @@ expr_fitness <- function(D,t) {
 		D = subset(D,update%%100==0)		
 	}
 	
-	quartz(width=WIDTH,height=HEIGHT)
 	g = ggplot(data=D, aes(x=update, y=max_fitness)) + stat_summary(aes(color=expr,fill=expr),fun.data="mean_cl_boot", geom="smooth") + labs(x="Update", y="Fitness") + quick_theme + ylim(0.5,1) #+ xlim(0,10000)
 	
 	if(STYLE=="draft") {
@@ -67,6 +66,15 @@ expr_fitness <- function(D,t) {
 	
 	return(g)
 }
+
+
+
+
+quartz(width=WIDTH,height=HEIGHT)
+
+c(find.files("fitness.dat","002-1d-fsm"), find.files("fitness.dat", "003-2d-fsm"))
+
+
 
 
 D = load.files(find.files("fitness.dat.gz"))
@@ -78,12 +86,20 @@ S4 = subset(D,treatment=="ta0" & (expr=="008-1d-fsm-rand" | expr=="009-2d-fsm-ra
 S5 = subset(D,treatment=="tb0" & (expr=="008-1d-fsm-rand" | expr=="009-2d-fsm-rand" | expr=="010-3d-fsm-rand"))
 S6 = subset(D,treatment=="tc0" & (expr=="008-1d-fsm-rand" | expr=="009-2d-fsm-rand" | expr=="010-3d-fsm-rand"))
 
+S7 = subset(D,treatment=="ta0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
+S8 = subset(D,treatment=="tb0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
+S9 = subset(D,treatment=="tc0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
 
-expr_fitness(S1,"base ta0")
+
+x001 = expr_fitness(S1,"non-adaptive")
+savefig(x001,"x001-nonadaptive-fitness")
+
 # expr_fitness(S2,"base tb0")
 # expr_fitness(S3,"base tc0")
 
-expr_fitness(S4,"rl ta0")
+x002 = expr_fitness(S4,"reinforcement")
+savefig(x002,"x002-reinforcement-fitness")
+
 # expr_fitness(S5,"rl tb0")
 # expr_fitness(S6,"rl tc0")
 
