@@ -41,6 +41,7 @@ using namespace ealib;
 enum objective_type { DENSITY, SYNC };
 
 LIBEA_MD_DECL(CA_RADIUS, "self_assembly.ca.radius", int);
+LIBEA_MD_DECL(CA_SCALE, "self_assembly.ca.scale", double);
 LIBEA_MD_DECL(CA_M, "self_assembly.ca.m", int);
 LIBEA_MD_DECL(CA_N, "self_assembly.ca.n", int);
 LIBEA_MD_DECL(CA_P, "self_assembly.ca.p", int);
@@ -73,6 +74,7 @@ public:
         add_option<CA_M>(this);
         add_option<CA_N>(this);
         add_option<CA_P>(this);
+        add_option<CA_SCALE>(this);
         add_option<CA_SAMPLES>(this);
         add_option<CA_RADIUS>(this);
         add_option<CA_IC_TYPE>(this);
@@ -84,6 +86,7 @@ public:
     virtual void gather_tools() {
         add_tool<ca_dom_1000x>(this);
         add_tool<ca_dom_na_1000x>(this);
+        add_tool<ca_dom_scale>(this);
         add_tool<ca_all_100x>(this);
         add_tool<ca_noise>(this);
         add_tool<ca_movie>(this);

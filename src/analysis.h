@@ -46,6 +46,27 @@ LIBEA_ANALYSIS_TOOL(ca_dom_1000x) {
     df.write(static_cast<double>(ealib::fitness(*i,ea))).endl();
 }
 
+LIBEA_ANALYSIS_TOOL(ca_dom_scale) {
+    // get the dominant:
+    typename EA::iterator i=analysis::dominant(ea);
+    
+    datafile df("ca_dom_scale.dat");
+    df.add_field("scale").add_field("w");
+
+    double m=get<CA_M>(ea);
+    double n=get<CA_N>(ea);
+    double p=get<CA_P>(ea);
+    
+    for(double s=1.0; s<10.0; s+=1.0) {
+        put<CA_M>(m*s,ea);
+        put<CA_N>(n*s,ea);
+        put<CA_P>(p*s,ea);
+        initialize_fitness_function(ea.fitness_function(), ea);
+        recalculate_fitness(*i,ea);
+        df.write(s).write(static_cast<double>(ealib::fitness(*i,ea))).endl();
+    }
+}
+
 
 LIBEA_ANALYSIS_TOOL(ca_all_100x) {
     datafile df("ca_all_1000x.dat");
