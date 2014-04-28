@@ -27,7 +27,7 @@
 
 #include <ea/analysis.h>
 #include <ea/analysis/dominant.h>
-
+#include <ea/mkv/analysis.h>
 #include "ca.h"
 
 LIBEA_ANALYSIS_TOOL(ca_dom_1000x) {
@@ -37,7 +37,7 @@ LIBEA_ANALYSIS_TOOL(ca_dom_1000x) {
     datafile df("ca_dom_1000x.dat");
     df.add_field("individual").add_field("w0").add_field("w1");
     df.write(get<IND_NAME>(*i)).write(static_cast<double>(ealib::fitness(*i,ea)));
-
+    
     put<CA_IC_TYPE>(1,ea);
     put<CA_SAMPLES>(1000,ea);
     initialize_fitness_function(ea.fitness_function(), ea);
@@ -52,7 +52,7 @@ LIBEA_ANALYSIS_TOOL(ca_dom_scale) {
     
     datafile df("ca_dom_scale.dat");
     df.add_field("scale").add_field("w");
-
+    
     double m=get<CA_M>(ea);
     double n=get<CA_N>(ea);
     double p=get<CA_P>(ea);

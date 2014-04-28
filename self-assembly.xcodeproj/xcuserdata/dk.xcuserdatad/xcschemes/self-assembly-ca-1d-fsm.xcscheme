@@ -61,11 +61,11 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-c ../etc/ca_1d_fsm.cfg --ea.rng.seed=1 --verbose"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-l checkpoint-10000.xml.gz --analyze ca_all_100x"
-            isEnabled = "NO">
+            argument = "-l checkpoint-10000.xml.gz --analyze mkv_dom_reduced_graph"
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>
