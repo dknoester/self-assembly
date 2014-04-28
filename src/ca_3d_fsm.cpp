@@ -64,6 +64,7 @@ struct cellular_automata_3d : abstract_cellular_automata {
         const int p = get<CA_P>(ea);
         const int r = get<CA_RADIUS>(ea);
         const int nin = pow(r*2+1,3);
+        const int rl = get<CA_REINFORCE>(ea,0);
 
         // build all the phenotypes, reset their rngs:
         std::vector<typename EA::phenotype_type> ca(m*n*p, ealib::phenotype(ind, ea));
@@ -135,14 +136,16 @@ struct cellular_automata_3d : abstract_cellular_automata {
                 }
                 
                 // now, did we move in the right direction, compared to last time through this loop?
-                pos = 0; neg = 1;
-                if(_C[ic] == 1) {
-                    if(acc > last_acc) {
-                        pos = 1; neg = 0;
-                    }
-                } else {
-                    if(acc < last_acc) {
-                        pos = 1; neg = 0;
+                if(rl != 0) {
+                    pos = 0; neg = 1;
+                    if(_C[ic] == 1) {
+                        if(acc > last_acc) {
+                            pos = 1; neg = 0;
+                        }
+                    } else {
+                        if(acc < last_acc) {
+                            pos = 1; neg = 0;
+                        }
                     }
                 }
                 last_acc = acc;

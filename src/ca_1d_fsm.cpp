@@ -61,6 +61,7 @@ struct cellular_automata_1d : abstract_cellular_automata {
         const int n = get<CA_N>(ea);
         const int r = get<CA_RADIUS>(ea);
         const int nin = r*2+1;
+        const int rl = get<CA_REINFORCE>(ea,0);
         
         // build all the phenotypes, reset their rngs:
         std::vector<typename EA::phenotype_type> ca(n, ealib::phenotype(ind, ea));
@@ -87,7 +88,7 @@ struct cellular_automata_1d : abstract_cellular_automata {
             for(std::size_t i=0; i<ca.size(); ++i) {
                 ca[i].clear();
             }
-
+            
             row_type row(_IC,ic);
             std::copy(row.begin(), row.end(), pt->begin());
             std::copy(row.begin(), row.end(), ptp1->begin());
@@ -95,7 +96,7 @@ struct cellular_automata_1d : abstract_cellular_automata {
             int acc=0;
             int last_acc=std::accumulate(row.begin(), row.end(), 0);
             int pos=0, neg=0;
-
+            
             // for each update:
             for(int u=0; u<(2*n); ++u) {
                 if(_cb != 0) {
@@ -104,7 +105,7 @@ struct cellular_automata_1d : abstract_cellular_automata {
                 bool changed=false;
                 acc=0;
                 neighborhood.reset(pt); // point the neighborhood at the right state vector
-
+                
                 for(int i=0; i<n; ++i) {
                     int agent=i; // agent's index
                     neighborhood.reset(i-r);
@@ -118,23 +119,25 @@ struct cellular_automata_1d : abstract_cellular_automata {
                 }
                 // rotate the state vector; BE SURE to use pt!
                 std::swap(pt, ptp1);
-
+                
                 // early stopping:
                 //  if states didn't change, or
                 //  all states are 0 or 1
                 if(!changed || (acc==0) || (acc==static_cast<int>(row.size()))) {
                     break;
                 }
-
+                
                 // now, did we move in the right direction, compared to last time through this loop?
-                pos = 0; neg = 1;
-                if(_C[ic] == 1) {
-                    if(acc > last_acc) {
-                        pos = 1; neg = 0;
-                    }
-                } else {
-                    if(acc < last_acc) {
-                        pos = 1; neg = 0;
+                if(rl != 0) {
+                    pos = 0; neg = 1;
+                    if(_C[ic] == 1) {
+                        if(acc > last_acc) {
+                            pos = 1; neg = 0;
+                        }
+                    } else {
+                        if(acc < last_acc) {
+                            pos = 1; neg = 0;
+                        }
                     }
                 }
                 last_acc = acc;
@@ -176,7 +179,7 @@ public:
         put<MKV_INPUT_N>(nin, ea);
         parent::before_initialization(ea);
     }
-
+    
 };
 
 // This macro connects the cli defined above to the main() function provided by ealib.

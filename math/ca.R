@@ -47,66 +47,50 @@ savefig <- function(x, name) {
 	dev.off()
 }
 
-data_summary <- function(x) {
-	cat("Max fitness:\n")
-	print(x[[1]][which.max(x[[1]]$max_fitness),])
-}
-
-
-expr_fitness <- function(D,t) {
+expr_fitness <- function(D) {
 	if(STYLE=="draft") {
 		D = subset(D,update%%100==0)		
 	}
 	
 	g = ggplot(data=D, aes(x=update, y=max_fitness)) + stat_summary(aes(color=expr,fill=expr),fun.data="mean_cl_boot", geom="smooth") + labs(x="Update", y="Fitness") + quick_theme + ylim(0.5,1) #+ xlim(0,10000)
 	
+	return(g)
+}
+
+treatment_fitness <- function(D) {
 	if(STYLE=="draft") {
-		g =	g + ggtitle(t)
+		D = subset(D,update%%100==0)		
 	}
+	
+	g = ggplot(data=D, aes(x=update, y=max_fitness)) + stat_summary(aes(color=treatment,fill=treatment),fun.data="mean_cl_boot", geom="smooth") + labs(x="Update", y="Fitness") + quick_theme + ylim(0.5,1) #+ xlim(0,10000)
 	
 	return(g)
 }
 
+D = load.files("fitness.dat.gz")
+
+x002 = load.files("fitness.dat.gz", "002-1d-fsm")
+x003 = load.files("fitness.dat.gz", "003-2d-fsm")
+x004 = load.files("fitness.dat.gz", "004-3d-fsm")
+x008 = load.files("fitness.dat.gz", "008-1d-fsm-rand")
+x009 = load.files("fitness.dat.gz", "009-2d-fsm-rand")
+x010 = load.files("fitness.dat.gz", "010-3d-fsm-rand")
+
+F_base_treatment_fitness = treatment_fitness(rbind(x002,x003,x004))
+F_rl_treatment_fitness = treatment_fitness(rbind(x008,x009,x010))
+
+
+F_base_fitness = expr_fitness(rbind(x002,x003,x004))
+F_base_fitness = F_base_fitness + scale_fill_discrete(breaks=c("002-1d-fsm","003-2d-fsm","004-3d-fsm"),labels=c("1D","2D","3D")) + scale_color_discrete(breaks=c("002-1d-fsm","003-2d-fsm","004-3d-fsm"),labels=c("1D","2D","3D"))
+savefig(F_base_fitness, "f001-base-fitness")
+
+F_rl_fitness = expr_fitness(rbind(x008, x009, x010))
+F_rl_fitness = F_rl_fitness + scale_fill_discrete(breaks=c("008-1d-fsm-rand","009-2d-fsm-rand","010-3d-fsm-rand"),labels=c("1D-rl","2D-rl","3D-rl")) + scale_color_discrete(breaks=c("008-1d-fsm-rand","009-2d-fsm-rand","010-3d-fsm-rand"),labels=c("1D-rl","2D-rl","3D-rl"))
+savefig(F_rl_fitness, "f002-rl_fitness")
 
 
 
-quartz(width=WIDTH,height=HEIGHT)
-
-c(find.files("fitness.dat","002-1d-fsm"), find.files("fitness.dat", "003-2d-fsm"))
-
-
-
-
-D = load.files(find.files("fitness.dat.gz"))
-
-S1 = subset(D,treatment=="ta0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
-S2 = subset(D,treatment=="tb0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
-S3 = subset(D,treatment=="tc0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
-S4 = subset(D,treatment=="ta0" & (expr=="008-1d-fsm-rand" | expr=="009-2d-fsm-rand" | expr=="010-3d-fsm-rand"))
-S5 = subset(D,treatment=="tb0" & (expr=="008-1d-fsm-rand" | expr=="009-2d-fsm-rand" | expr=="010-3d-fsm-rand"))
-S6 = subset(D,treatment=="tc0" & (expr=="008-1d-fsm-rand" | expr=="009-2d-fsm-rand" | expr=="010-3d-fsm-rand"))
-
-S7 = subset(D,treatment=="ta0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
-S8 = subset(D,treatment=="tb0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
-S9 = subset(D,treatment=="tc0" & (expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm"))
-
-
-x001 = expr_fitness(S1,"non-adaptive")
-savefig(x001,"x001-nonadaptive-fitness")
-
-# expr_fitness(S2,"base tb0")
-# expr_fitness(S3,"base tc0")
-
-x002 = expr_fitness(S4,"reinforcement")
-savefig(x002,"x002-reinforcement-fitness")
-
-# expr_fitness(S5,"rl tb0")
-# expr_fitness(S6,"rl tc0")
-
-
-
-
-
+find.files("fitness.dat.gz")
 
 
 
