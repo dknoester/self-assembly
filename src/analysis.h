@@ -125,12 +125,13 @@ struct noise_callback : public FitnessFunction::callback {
     noise_callback(RandomNumberGenerator& rng, double p, datafile& df) : _rng(rng), _p(p), _df(df) {
     }
     
-    virtual void new_state(typename FitnessFunction::state_container_type& s) {
+    virtual bool new_state(typename FitnessFunction::state_container_type& s, int& c) {
         for(typename FitnessFunction::state_container_type::iterator i=s.begin(); i!=s.end(); ++i) {
             if(_rng.p(_p)) {
                 (*i) ^= 0x01;
             }
         }
+        return false;
     }
     
     RandomNumberGenerator& _rng;
@@ -166,8 +167,9 @@ struct movie_callback : public FitnessFunction::callback {
     movie_callback(datafile& df) : _df(df) {
     }
     
-    virtual void new_state(typename FitnessFunction::state_container_type& s) {
+    virtual bool new_state(typename FitnessFunction::state_container_type& s, int& c) {
         _df.write_all(s.begin(), s.end()).endl();
+        return false;
     }
     
     datafile& _df;
@@ -181,7 +183,7 @@ LIBEA_ANALYSIS_TOOL(ca_movie) {
     put<CA_SAMPLES>(1,ea);
     
     datafile summary("ca_movie_summary.dat");
-    summary.add_field("movie").add_field("w");
+    summary.add_field("movie").add_field("w").add_field("c");
     summary.comment("individual: " + boost::lexical_cast<std::string>(get<IND_NAME>(*ind)));
     
     for(int i=0; i<10; ++i) {
@@ -199,7 +201,57 @@ LIBEA_ANALYSIS_TOOL(ca_movie) {
         movie_callback<typename EA::fitness_function_type> cb(df);
         ea.fitness_function().reset_callback(&cb);
         recalculate_fitness(*ind,ea);
-        summary.write(i).write(static_cast<double>(ealib::fitness(*ind,ea))).endl();
+        summary.write(i).write(static_cast<double>(ealib::fitness(*ind,ea))).write(ea.fitness_function()._C[0]).endl();
+    }
+}
+
+//! Callback used to record a frame for a movie and trigger adaptation.
+template <typename FitnessFunction>
+struct adaptive_movie_callback : public FitnessFunction::callback {
+    adaptive_movie_callback(datafile& df) : _df(df), _t(0) {
+    }
+    
+    virtual bool new_state(typename FitnessFunction::state_container_type& s, int& c) {
+        _df.write_all(s.begin(), s.end()).endl();
+        if(_t++==2) {// && (std::count(s.begin(), s.end(), c) > (0.8 * s.size()))) {
+            c ^= 0x01;
+//            _t = true;
+            return true;
+        }
+        return false;
+    }
+    
+    datafile& _df;
+    int _t;
+};
+
+//! Analysis tool to generate a movie showing adaptation.
+LIBEA_ANALYSIS_TOOL(ca_adaptive_movie) {
+    typename EA::iterator ind=analysis::dominant(ea);
+    
+    put<CA_IC_TYPE>(1,ea);
+    put<CA_SAMPLES>(1,ea);
+    
+    datafile summary("ca_adaptive_movie_summary.dat");
+    summary.add_field("movie").add_field("w").add_field("c");
+    summary.comment("individual: " + boost::lexical_cast<std::string>(get<IND_NAME>(*ind)));
+    
+    for(int i=0; i<10; ++i) {
+        initialize_fitness_function(ea.fitness_function(), ea);
+        
+        datafile df("ca_adaptive_movie_" + boost::lexical_cast<std::string>(i) + ".dat");
+        df.comment("first line holds dimensions of world")
+        .comment("there are always three dimensions, in (m,n,p) order.")
+        .comment("if p == 0, then we're dealing with a 2d world")
+        .comment("note that this is matrix notation: m=row, n=col, p=page")
+        .comment("m==y axis, n==x axis, p==z axis")
+        .comment("each subsequent line holds an entire world state in (page-)row-major order");
+        df.write(get<CA_M>(ea,1)).write(get<CA_N>(ea)).write(get<CA_P>(ea,1)).endl();
+        
+        adaptive_movie_callback<typename EA::fitness_function_type> cb(df);
+        ea.fitness_function().reset_callback(&cb);
+        recalculate_fitness(*ind,ea);
+        summary.write(i).write(static_cast<double>(ealib::fitness(*ind,ea))).write(ea.fitness_function()._C[0]).endl();
     }
 }
 

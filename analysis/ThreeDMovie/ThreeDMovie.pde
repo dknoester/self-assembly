@@ -2,12 +2,13 @@
 Experiment expr;
 
 
-String filename = "/Users/heathergoldsby/Desktop/processing-projects/ca_1d.dat";
+//String filename = "/Users/heathergoldsby/Desktop/processing-projects/ca_1d.dat";
+String filename = "/Users/dk/research/src/self-assembly/tmp/ca_adaptive_movie_9.dat";
 
 
 void setup() {
-  size(640,360,P3D);
-  frameRate(5);
+  size(640,480,P3D);
+  frameRate(2);
   //lights();
   background(0);
   smooth();

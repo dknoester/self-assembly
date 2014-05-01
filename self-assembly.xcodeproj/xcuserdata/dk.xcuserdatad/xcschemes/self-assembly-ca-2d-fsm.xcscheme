@@ -61,15 +61,15 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-c ../etc/ca_2d_fsm.cfg --ea.rng.seed=1 --verbose"
-            isEnabled = "YES">
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-l checkpoint-10000.xml.gz --analyze ca_adaptive_movie"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-l checkpoint-10000.xml.gz --analyze ca_movie"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "-l checkpoint-10000.xml.gz --analyze ca_dom_1000x"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>

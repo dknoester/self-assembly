@@ -51,7 +51,7 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
     ivector_type _C; //!< Consensus bit per initial condition.
     
     struct callback {
-        virtual void new_state(state_container_type& s) = 0;
+        virtual bool new_state(state_container_type& s, int& c) = 0;
     };
     
     callback* _cb;
@@ -140,7 +140,7 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
             // for each update:
             for(int u=0; u<(2*n); ++u) {
                 if(_cb != 0) {
-                    _cb->new_state(S_t);
+                    _cb->new_state(S_t, _C[ic]);
                 }
                 
                 bool changed=false;

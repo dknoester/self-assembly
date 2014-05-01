@@ -92,6 +92,7 @@ public:
         add_tool<ca_all_100x>(this);
         add_tool<ca_noise>(this);
         add_tool<ca_movie>(this);
+        add_tool<ca_adaptive_movie>(this);
         add_tool<ealib::mkv::dominant_reduced_graph>(this);
     }
     

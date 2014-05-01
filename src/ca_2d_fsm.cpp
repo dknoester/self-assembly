@@ -36,7 +36,7 @@ struct cellular_automata_2d : abstract_cellular_automata {
     typedef reinforcement_adaptor<size_adaptor_type> reinforcement_adaptor_type;
 
     struct callback {
-        virtual void new_state(state_container_type& s) = 0;
+        virtual bool new_state(state_container_type& s, int& c) = 0;
     };
     
     callback* _cb;
@@ -101,11 +101,12 @@ struct cellular_automata_2d : abstract_cellular_automata {
             int last_acc=std::accumulate(row.begin(), row.end(), 0);
             int pos=0, neg=0;
 
+            if(_cb != 0) {
+                _cb->new_state(*pt, _C[ic]);
+            }
+
             // for each update:
             for(int u=0; u<(2*m*n); ++u) {
-                if(_cb != 0) {
-                    _cb->new_state(*pt);
-                }
                 bool changed=false;
                 acc=0;
                 neighborhood.reset(pt); // point the neighborhood at the right state vector
@@ -125,6 +126,11 @@ struct cellular_automata_2d : abstract_cellular_automata {
                 }
                 // rotate the state vector; BE SURE to use pt below here!
                 std::swap(pt, ptp1);
+
+                // record the state:
+                if(_cb != 0) {
+                    _cb->new_state(*pt, _C[ic]);
+                }
 
                 // early stopping:
                 //  if states didn't change, or
@@ -147,10 +153,6 @@ struct cellular_automata_2d : abstract_cellular_automata {
                     }
                 }
                 last_acc = acc;
-            }
-            // record the last state:
-            if(_cb != 0) {
-                _cb->new_state(*pt);
             }
 
             // calculate fitness:
