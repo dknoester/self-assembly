@@ -14,7 +14,7 @@ if [[ $# != 2 ]]; then
     exit -1
 fi
 
-for i in `find $2 -name "checkpoint-*.xml.gz" | grep -v tc0 | grep -v tb0`; do
+for i in `find $2 -name "checkpoint-*.xml.gz"`; do
     DIR=`dirname $i`
     CHECKPOINT=`basename $i`
     pushd ${DIR} >/dev/null

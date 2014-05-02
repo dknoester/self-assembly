@@ -3,13 +3,14 @@ library(plyr)
 library(stringr)
 source("~/research/src/self-assembly/math/common.R")
 setwd("/Users/dk/research/src/self-assembly/var")
-figpath = "/Users/dk/research/src/self-assembly/doc/saso2014/figures/"
+figpath = "/Users/dk/research/doc/self-assembly/saso2014/non-embedded/"
 
 STYLE="draft" # or "final"
 WIDTH=6
 HEIGHT=3.75
 
-quick_theme <- theme_bw() + theme(panel.border=element_blank(), axis.line=element_line(colour = "black",size=0.75), legend.title=element_blank(), legend.justification=c(1,0), legend.position=c(1,0))
+quick_theme <- theme_bw() + theme(panel.border=element_blank(), axis.line=element_line(colour = "black",size=0.75), legend.title=element_blank(), legend.justification=c(1,0), legend.position=c(1,0), text=element_text(family="Helvetica",size=14))
+
 
 # Plot the fitness of D by experiment
 #
@@ -56,6 +57,7 @@ F_base_fitness = F_base_fitness + scale_fill_discrete(breaks=c("002-1d-fsm","003
 showfig(F_base_fitness)
 savefig(F_base_fitness, "p-fitness")
 
+
 # Fitness of reinforcement learning experiments.
 F_rl_fitness = expr_fitness(rbind(x008, x009, x010))
 F_rl_fitness = F_rl_fitness + scale_fill_discrete(breaks=c("008-1d-fsm-rand","009-2d-fsm-rand","010-3d-fsm-rand"),labels=c("1D-rl","2D-rl","3D-rl")) + scale_color_discrete(breaks=c("008-1d-fsm-rand","009-2d-fsm-rand","010-3d-fsm-rand"),labels=c("1D-rl","2D-rl","3D-rl"))
@@ -74,7 +76,7 @@ savefig(F_switch_fitness, "p-fitness-reevolved")
 A = load.files("ca_dom_adapt.dat")
 A$delta_w = A$w0 - A$w1
 levels(A$expr) = c("1D-rl", "2D-rl", "3D-rl")
-a = ggplot(A, aes(expr,delta_w,fill=expr)) + quick_theme + theme(legend.position="none") + labs(x="", y="Fitness delta") + geom_boxplot() + geom_jitter() + ylim(0,1)
+a = ggplot(A, aes(expr,delta_w,fill=expr)) + theme(legend.position="none") + labs(x="", y="Fitness delta") + geom_boxplot() + geom_jitter() + ylim(0,1) + quick_theme
 showfig(a)
 savefig(a, "p-adaptive-fitness")
 
@@ -84,6 +86,6 @@ savefig(a, "p-adaptive-fitness")
 #
 S = load.files("ca_dom_scale.dat", "ta0")
 levels(S$expr) = c("1D", "2D", "3D", "1D-rl", "2D-rl", "3D-rl")
-s = ggplot(S, aes(x=factor(scale),y=w,fill=expr)) + quick_theme + geom_boxplot() + labs(x="Scaling factor",y="Fitness") + theme(legend.position="right")
+s = ggplot(S, aes(x=factor(scale),y=w,fill=expr)) + geom_boxplot() + labs(x="Scaling factor",y="Fitness") + theme(legend.position="right") + quick_theme
 showfig(s)
 savefig(s, "p-scaling-fitness", width=12)
