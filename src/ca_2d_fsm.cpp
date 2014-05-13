@@ -87,7 +87,11 @@ struct cellular_automata_2d : abstract_cellular_automata {
         reinforcement_adaptor_type input(size_adaptor, nin); // this augments the input with +/- reinforcement signals.
                 
         // for each initial condition:
-        for(std::size_t ic=0; ic<_IC.size1(); ++ic) {
+        std::size_t stop=get<CA_UPDATE_N>(ea,0);
+        if(!stop) {
+            stop = _IC.size1();
+        }
+        for(std::size_t ic=0; ic<stop; ++ic) {
             // clear each cell and set new initial conditions:
             for(std::size_t i=0; i<ca.size(); ++i) {
                 ca[i].clear();

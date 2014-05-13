@@ -160,6 +160,29 @@ LIBEA_ANALYSIS_TOOL(ca_noise) {
     }
 }
 
+LIBEA_ANALYSIS_TOOL(ca_dom_rule_density) {
+    // get the dominant:
+    typename EA::iterator i=analysis::dominant(ea);
+    
+    datafile df("ca_dom_rule_density.dat");
+    df.add_field("individual").add_field("rho");
+    df.write(get<IND_NAME>(*i));
+
+    typename EA::phenotype_type& pt = ealib::phenotype(*i, ea);
+    int shift = pt.nstates();
+    unsigned long n = 0x01 << shift;
+    double rho = 0.0;
+    
+    for(unsigned long j=0; j<n; ++j) {
+        for(int k=0; k<shift; ++k) {
+            pt(k) = (j >> k) & 0x01;
+        }
+        pt.update();
+        rho += pt.output(0);
+    }
+    
+    df.write(rho / static_cast<double>(n)).endl();
+}
 
 //! Callback used to record a frame for a movie.
 template <typename FitnessFunction>

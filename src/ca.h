@@ -51,6 +51,7 @@ LIBEA_MD_DECL(CA_SAMPLES, "self_assembly.ca.samples", int);
 LIBEA_MD_DECL(CA_REINFORCE, "self_assembly.ca.reinforcement", int);
 LIBEA_MD_DECL(CA_DIRECTION, "self_assembly.ca.direction", int);
 LIBEA_MD_DECL(CA_DISABLE_ADAPTATION, "self_assembly.ca.disable_adaptation", int);
+LIBEA_MD_DECL(CA_UPDATE_N, "self_assembly.ca.update.n", int);
 
 #include "analysis.h"
 
@@ -81,6 +82,7 @@ public:
         add_option<CA_IC_TYPE>(this);
         add_option<CA_REINFORCE>(this);
         add_option<CA_DIRECTION>(this);
+        add_option<CA_UPDATE_N>(this);
     }
     
     //! Define tools here.
@@ -89,6 +91,7 @@ public:
         add_tool<ca_dom_na_1000x>(this);
         add_tool<ca_dom_scale>(this);
         add_tool<ca_dom_adapt>(this);
+        add_tool<ca_dom_rule_density>(this);
         add_tool<ca_all_100x>(this);
         add_tool<ca_noise>(this);
         add_tool<ca_movie>(this);
