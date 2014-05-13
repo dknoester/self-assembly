@@ -86,6 +86,26 @@ savefig(a, "p-adaptive-fitness")
 #
 S = load.files("ca_dom_scale.dat", "ta0")
 levels(S$expr) = c("1D", "2D", "3D", "1D-rl", "2D-rl", "3D-rl")
-s = ggplot(S, aes(x=factor(scale),y=w,fill=expr)) + geom_boxplot() + labs(x="Scaling factor",y="Fitness") + theme(legend.position="right") + quick_theme
+s = ggplot(S, aes(x=factor(scale),y=w,color=expr)) + geom_point() + labs(x="Scaling factor",y="Fitness") + quick_theme + theme(legend.position="right") + geom_jitter()
 showfig(s)
 savefig(s, "p-scaling-fitness", width=12)
+
+# Rule table density data
+#
+#
+R = load.files("ca_dom_rule_density")
+r = ggplot(R, aes(x=expr,y=rho)) + geom_point() + geom_jitter()
+showfig(r)
+
+summary(R)
+summary(S)
+summary(x002)
+
+st = subset(S,expr=="002-1d-fsm" & scale==1)
+summary(st)
+X = merge(R, st, by="trial")
+summary(X)
+r = ggplot(X, aes(x=w, y=rho)) + geom_point() + quick_theme + xlim(c(0,1)) + ylim(c(0,1))
+showfig(r)
+
+cor(X$w, X$rho, method="pearson")

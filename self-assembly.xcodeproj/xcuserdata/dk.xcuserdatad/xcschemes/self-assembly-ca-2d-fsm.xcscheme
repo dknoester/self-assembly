@@ -68,7 +68,7 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-l checkpoint-10000.xml.gz --analyze ca_movie"
+            argument = "-l checkpoint-10000.xml.gz --analyze ca_dom_sampled_rule_density"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

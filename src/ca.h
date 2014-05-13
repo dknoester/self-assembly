@@ -92,6 +92,7 @@ public:
         add_tool<ca_dom_scale>(this);
         add_tool<ca_dom_adapt>(this);
         add_tool<ca_dom_rule_density>(this);
+        add_tool<ca_dom_sampled_rule_density>(this);
         add_tool<ca_all_100x>(this);
         add_tool<ca_noise>(this);
         add_tool<ca_movie>(this);

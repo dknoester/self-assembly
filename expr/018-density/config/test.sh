@@ -4,7 +4,7 @@ trap "exit 255" SIGINT SIGTERM
 function analyze {
     # 1: executable
     # 2: checkpoint
-    $1 -l $2 --analyze ca_dom_rule_density
+    $1 -l $2 --analyze ca_dom_sampled_rule_density
 }
 
 if [[ $# != 2 ]]; then

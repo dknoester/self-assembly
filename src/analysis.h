@@ -25,6 +25,7 @@
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/mean.hpp>
 
+#include <ea/algorithm.h>
 #include <ea/analysis.h>
 #include <ea/analysis/dominant.h>
 #include <ea/mkv/analysis.h>
@@ -165,11 +166,12 @@ LIBEA_ANALYSIS_TOOL(ca_dom_rule_density) {
     typename EA::iterator i=analysis::dominant(ea);
     
     datafile df("ca_dom_rule_density.dat");
-    df.add_field("individual").add_field("rho");
-    df.write(get<IND_NAME>(*i));
+    df.add_field("individual").add_field("w").add_field("rho");
+    df.write(get<IND_NAME>(*i)).write(static_cast<double>(ealib::fitness(*i,ea)));
 
     typename EA::phenotype_type& pt = ealib::phenotype(*i, ea);
     int shift = pt.nstates();
+    assert(shift < (sizeof(unsigned long)*8));
     unsigned long n = 0x01 << shift;
     double rho = 0.0;
     
@@ -182,6 +184,35 @@ LIBEA_ANALYSIS_TOOL(ca_dom_rule_density) {
     }
     
     df.write(rho / static_cast<double>(n)).endl();
+}
+
+
+LIBEA_ANALYSIS_TOOL(ca_dom_sampled_rule_density) {
+    // get the dominant:
+    typename EA::iterator i=analysis::dominant(ea);
+    
+    datafile df("ca_dom_sampled_rule_density.dat");
+    df.add_field("individual").add_field("w").add_field("rho");
+    df.write(get<IND_NAME>(*i)).write(static_cast<double>(ealib::fitness(*i,ea)));
+    
+    typename EA::phenotype_type& pt = ealib::phenotype(*i, ea);
+    double rho = 0.0;
+    const int trials=1000000;
+    std::size_t n = pt.nstates();
+    std::vector<std::size_t> bits(n);
+    algorithm::iota(bits.begin(), bits.end());
+    
+    for(int c=0; c<trials; ++c) {
+        std::random_shuffle(bits.begin(), bits.end(), ea.rng());
+        int on = ea.rng()(n); // number of bits that will be on
+        for(int j=0; j<on; ++j) {
+            pt(bits[j]) = 1;
+        }
+        pt.update();
+        rho += pt.output(0);
+    }
+    
+    df.write(rho / static_cast<double>(trials)).endl();
 }
 
 //! Callback used to record a frame for a movie.
