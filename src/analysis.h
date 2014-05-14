@@ -68,6 +68,23 @@ LIBEA_ANALYSIS_TOOL(ca_dom_scale) {
     }
 }
 
+LIBEA_ANALYSIS_TOOL(ca_dom_ko_hidden) {
+    // get the dominant:
+    typename EA::iterator i=analysis::dominant(ea);
+    
+    datafile df("ca_dom_ko_hidden.dat");
+    df.add_field("individual").add_field("w0").add_field("w1");
+    df.write(get<IND_NAME>(*i)).write(static_cast<double>(ealib::fitness(*i,ea)));
+    
+    put<CA_IC_TYPE>(1,ea);
+    put<CA_SAMPLES>(1000,ea);
+    put<CA_KO_HIDDEN>(1,ea);
+
+    initialize_fitness_function(ea.fitness_function(), ea);
+    recalculate_fitness(*i,ea);
+    df.write(static_cast<double>(ealib::fitness(*i,ea))).endl();
+}
+
 LIBEA_ANALYSIS_TOOL(ca_dom_adapt) {
     // get the dominant:
     typename EA::iterator i=analysis::dominant(ea);

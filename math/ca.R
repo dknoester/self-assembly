@@ -1,22 +1,26 @@
 library(ggplot2)
 library(plyr)
 library(stringr)
+library(extrafont)
+loadfonts(quiet=TRUE)
+Sys.setenv(R_GSCMD = "/opt/local/bin/gs")
 source("~/research/src/self-assembly/math/common.R")
 setwd("/Users/dk/research/src/self-assembly/var")
-figpath = "/Users/dk/research/doc/self-assembly/saso2014/non-embedded/"
+figpath = "/Users/dk/research/doc/self-assembly/saso2014/figures/"
+
 
 STYLE="draft" # or "final"
 WIDTH=6
 HEIGHT=3.75
 
-quick_theme <- theme_bw() + theme(panel.border=element_blank(), axis.line=element_line(colour = "black",size=0.75), legend.title=element_blank(), legend.justification=c(1,0), legend.position=c(1,0), text=element_text(family="Helvetica",size=14))
+quick_theme <- theme_bw() + theme(panel.border=element_blank(), axis.line=element_line(colour = "black",size=0.75), legend.title=element_blank(), legend.justification=c(1,0), legend.position=c(1,0), text=element_text(size=14))
 
 
 # Plot the fitness of D by experiment
 #
 expr_fitness <- function(D) {
 	if(STYLE=="draft") {
-		D = subset(D,update%%100==0)		
+		D = subset(D,update%%100==0)
 	}
 	g = ggplot(data=D, aes(x=update, y=max_fitness)) + stat_summary(aes(color=expr,fill=expr),fun.data="mean_cl_boot", geom="smooth") + labs(x="Update", y="Fitness") + quick_theme + ylim(0.5,1)
 	return(g)
@@ -25,7 +29,7 @@ expr_fitness <- function(D) {
 # Show figure x.
 #
 showfig <- function(x) {
-	quartz(width=WIDTH,height=HEIGHT)
+	quartz(width=WIDTH, height=HEIGHT)
 	print(x)
 }
 
@@ -33,9 +37,10 @@ showfig <- function(x) {
 #
 savefig <- function(x, name, width=WIDTH, height=HEIGHT) {
 	f = paste(figpath,name,".pdf",sep="")
-	pdf(file=f, width=width, height=height)
+	pdf(file=f, width=width, height=height, family="CM Sans")
 	print(x)
 	dev.off()
+	embed_fonts(f)#, outfile=paste(figpath,name,"-embed.pdf",sep=""))
 }
 
 # Fitness data for the different experiments.
@@ -44,12 +49,6 @@ savefig <- function(x, name, width=WIDTH, height=HEIGHT) {
 x002 = load.files("fitness.dat.gz", "ta0", "002-1d-fsm")
 x003 = load.files("fitness.dat.gz", "ta0", "003-2d-fsm")
 x004 = load.files("fitness.dat.gz", "ta0", "004-3d-fsm")
-x008 = load.files("fitness.dat.gz", "ta0", "008-1d-fsm-rand")
-x009 = load.files("fitness.dat.gz", "ta0", "009-2d-fsm-rand")
-x010 = load.files("fitness.dat.gz", "ta0", "010-3d-fsm-rand")
-x011 = load.files("fitness.dat.gz", "ta0", "011-1d-fsm-switch")
-x012 = load.files("fitness.dat.gz", "ta0", "012-2d-fsm-switch")
-x013 = load.files("fitness.dat.gz", "ta0", "013-3d-fsm-switch")
 
 # Fitness of base experiments.
 F_base_fitness = expr_fitness(rbind(x002,x003,x004))
@@ -57,6 +56,9 @@ F_base_fitness = F_base_fitness + scale_fill_discrete(breaks=c("002-1d-fsm","003
 showfig(F_base_fitness)
 savefig(F_base_fitness, "p-fitness")
 
+x008 = load.files("fitness.dat.gz", "ta0", "008-1d-fsm-rand")
+x009 = load.files("fitness.dat.gz", "ta0", "009-2d-fsm-rand")
+x010 = load.files("fitness.dat.gz", "ta0", "010-3d-fsm-rand")
 
 # Fitness of reinforcement learning experiments.
 F_rl_fitness = expr_fitness(rbind(x008, x009, x010))
@@ -69,6 +71,15 @@ F_switch_fitness = F_switch_fitness + scale_fill_discrete(breaks=c("011-1d-fsm-s
 showfig(F_switch_fitness)
 savefig(F_switch_fitness, "p-fitness-reevolved")
 
+# 1000x dominant fitness
+#
+#
+D = load.files("ca_dom_1000x")
+levels(D$expr) = c("1D", "2D", "3D", "1D-rl", "2D-rl", "3D-rl")
+D$delta_w = D$w1 - D$w0
+d = ggplot(D, aes(x=expr,y=delta_w)) + geom_boxplot() + quick_theme + xlab("") + ylab(expression(paste(Delta, plain(w))))
+showfig(d)
+savefig(d, "p-1000x-deltaw")
 
 # Adaptive data
 #
@@ -85,27 +96,25 @@ savefig(a, "p-adaptive-fitness")
 #
 #
 S = load.files("ca_dom_scale.dat", "ta0")
+S = subset(S, expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm")
 levels(S$expr) = c("1D", "2D", "3D", "1D-rl", "2D-rl", "3D-rl")
 s = ggplot(S, aes(x=factor(scale),y=w,color=expr)) + geom_point() + labs(x="Scaling factor",y="Fitness") + quick_theme + theme(legend.position="right") + geom_jitter()
 showfig(s)
 savefig(s, "p-scaling-fitness", width=12)
 
+
 # Rule table density data
 #
 #
 R = load.files("ca_dom_rule_density")
-r = ggplot(R, aes(x=expr,y=rho)) + geom_point() + geom_jitter()
+levels(R$expr) = c("1D")
+R = merge(R, subset(S,expr=="1D" & scale==1), by="trial")
+# cor(R$w, R$rho, method="spearman")
+# == 0.106
+
+P = load.files("ca_dom_sampled_rule_density")
+levels(P$expr) = c("2D", "3D")
+P = rbind(data.frame(w=P$w, rho=P$rho, expr=P$expr), data.frame(w=R$w, rho=R$rho, expr=R$expr.x))
+r = ggplot(P, aes(x=w,y=rho,color=expr)) + geom_point() + quick_theme  + xlim(c(0,1)) + ylim(c(0,1)) + theme(legend.position="right")
 showfig(r)
-
-summary(R)
-summary(S)
-summary(x002)
-
-st = subset(S,expr=="002-1d-fsm" & scale==1)
-summary(st)
-X = merge(R, st, by="trial")
-summary(X)
-r = ggplot(X, aes(x=w, y=rho)) + geom_point() + quick_theme + xlim(c(0,1)) + ylim(c(0,1))
-showfig(r)
-
-cor(X$w, X$rho, method="pearson")
+savefig(r, "p-rule-density")

@@ -62,6 +62,7 @@ struct cellular_automata_1d : abstract_cellular_automata {
         const int r = get<CA_RADIUS>(ea);
         const int nin = r*2+1;
         const int rl = get<CA_REINFORCE>(ea,0);
+        const int ko_hidden = get<CA_KO_HIDDEN>(ea,0);
         
         // build all the phenotypes, reset their rngs:
         std::vector<typename EA::phenotype_type> ca(n, ealib::phenotype(ind, ea));
@@ -115,6 +116,11 @@ struct cellular_automata_1d : abstract_cellular_automata {
                     int agent=i; // agent's index
                     neighborhood.reset(i-r);
                     input.reset(pos, neg);
+
+                    if(ko_hidden) {
+                        std::fill(ca[agent].begin_hidden(), ca[agent].end_hidden(), typename EA::phenotype_type::state_type());
+                    }
+                    
                     ca[agent].update(input); // update the agent
                     
                     int output = ca[agent].output(0); // get its output
