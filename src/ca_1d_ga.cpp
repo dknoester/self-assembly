@@ -72,8 +72,10 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
         
         switch(get<CA_IC_TYPE>(ea,0)) {
             case 0: { // uniform density
-                // 1/2 above pc:
-                for(std::size_t i=0; i<_IC.size1()/2; ++i) {
+                std::size_t n=_IC.size1()/3;
+                
+                // 1/3 above pc:
+                for(std::size_t i=0; i<n; ++i) {
                     row_type r(_IC,i);
                     std::size_t x=(0.5 + ea.rng().p()/2.0) * r.size();
                     for(std::size_t j=0; j<x; ++j) {
@@ -86,8 +88,8 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
                     _C[i] = 1;
                 }
                 
-                // 1/2 below pc:
-                for(std::size_t i=_IC.size1()/2; i<_IC.size1(); ++i) {
+                // 1/3 below pc:
+                for(std::size_t i=n; i<(2*n); ++i) {
                     row_type r(_IC,i);
                     std::size_t x=(ea.rng().p()/2.0) * r.size();
                     for(std::size_t j=0; j<x; ++j) {
@@ -99,6 +101,22 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
                     std::random_shuffle(r.begin(), r.end(), ea.rng());
                     _C[i] = 0;
                 }
+                
+                // 1/3 at uniform probability
+                for(std::size_t i=(2*n); i<_IC.size1(); ++i) {
+                    row_type r(_IC,i);
+                    _C[i] = 0;
+                    for(std::size_t j=0; j<r.size(); ++j) {
+                        if(ea.rng().bit()) {
+                            r[j] = 1;
+                            ++_C[i];
+                        } else {
+                            r[j] = 0;
+                        }
+                    }
+                    _C[i] = (_C[i] > static_cast<int>((r.size()/2)));
+                }
+                
                 break;
             }
             case 1: { // uniform probability
