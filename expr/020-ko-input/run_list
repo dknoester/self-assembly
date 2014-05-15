@@ -1,0 +1,13 @@
+set description 020-ko-input
+set email dk@msu.edu
+set freq_email Crash
+set priority 3
+set class_pref 99
+set walltime 12
+set mem_request 2
+set config_dir config
+set max_cpus 30
+
+1 ta0 ./test.sh /mnt/home/dk/bin/self-assembly-ca-1d-fsm /mnt/home/dk/src/self-assembly/expr/002-1d-fsm
+1 tb0 ./test.sh /mnt/home/dk/bin/self-assembly-ca-2d-fsm /mnt/home/dk/src/self-assembly/expr/003-2d-fsm
+1 tc0 ./test.sh /mnt/home/dk/bin/self-assembly-ca-3d-fsm /mnt/home/dk/src/self-assembly/expr/004-3d-fsm

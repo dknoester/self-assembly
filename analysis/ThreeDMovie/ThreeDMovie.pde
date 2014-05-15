@@ -3,7 +3,7 @@ Experiment expr;
 
 
 //String filename = "/Users/heathergoldsby/Desktop/processing-projects/ca_1d.dat";
-String filename = "/Users/dk/research/src/self-assembly/tmp/ca_adaptive_movie_9.dat";
+String filename = "/Users/dk/research/src/self-assembly/tmp/ca_movie_0.dat";
 
 
 void setup() {

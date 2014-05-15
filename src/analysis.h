@@ -32,7 +32,6 @@
 #include "ca.h"
 
 LIBEA_ANALYSIS_TOOL(ca_dom_1000x) {
-    // get the dominant:
     typename EA::iterator i=analysis::dominant(ea);
     
     datafile df("ca_dom_1000x.dat");
@@ -47,8 +46,8 @@ LIBEA_ANALYSIS_TOOL(ca_dom_1000x) {
     df.write(static_cast<double>(ealib::fitness(*i,ea))).endl();
 }
 
+
 LIBEA_ANALYSIS_TOOL(ca_dom_scale) {
-    // get the dominant:
     typename EA::iterator i=analysis::dominant(ea);
     
     datafile df("ca_dom_scale.dat");
@@ -68,8 +67,8 @@ LIBEA_ANALYSIS_TOOL(ca_dom_scale) {
     }
 }
 
+
 LIBEA_ANALYSIS_TOOL(ca_dom_ko_hidden) {
-    // get the dominant:
     typename EA::iterator i=analysis::dominant(ea);
     
     datafile df("ca_dom_ko_hidden.dat");
@@ -85,101 +84,24 @@ LIBEA_ANALYSIS_TOOL(ca_dom_ko_hidden) {
     df.write(static_cast<double>(ealib::fitness(*i,ea))).endl();
 }
 
-LIBEA_ANALYSIS_TOOL(ca_dom_adapt) {
-    // get the dominant:
+LIBEA_ANALYSIS_TOOL(ca_dom_ko_input) {
     typename EA::iterator i=analysis::dominant(ea);
     
-    datafile df("ca_dom_adapt.dat");
+    datafile df("ca_dom_ko_input.dat");
     df.add_field("individual").add_field("w0").add_field("w1");
     df.write(get<IND_NAME>(*i)).write(static_cast<double>(ealib::fitness(*i,ea)));
     
     put<CA_IC_TYPE>(1,ea);
     put<CA_SAMPLES>(1000,ea);
-    put<CA_REINFORCE>(0,ea);
-    initialize_fitness_function(ea.fitness_function(), ea);
+    put<CA_KO_INPUT>(1,ea);
     
+    initialize_fitness_function(ea.fitness_function(), ea);
     recalculate_fitness(*i,ea);
     df.write(static_cast<double>(ealib::fitness(*i,ea))).endl();
 }
 
-LIBEA_ANALYSIS_TOOL(ca_all_100x) {
-    datafile df("ca_all_1000x.dat");
-    df.add_field("individual").add_field("w0").add_field("w1");
-    
-    put<CA_IC_TYPE>(1,ea);
-    put<CA_SAMPLES>(100,ea);
-    initialize_fitness_function(ea.fitness_function(), ea);
-    
-    for(typename EA::iterator i=ea.begin(); i!=ea.end(); ++i) {
-        df.write(get<IND_NAME>(*i)).write(static_cast<double>(ealib::fitness(*i,ea)));
-        recalculate_fitness(*i,ea);
-        df.write(static_cast<double>(ealib::fitness(*i,ea))).endl();
-    }
-}
-
-LIBEA_ANALYSIS_TOOL(ca_dom_na_1000x) {
-    // get the dominant:
-    typename EA::iterator i=analysis::dominant(ea);
-    
-    datafile df("ca_dom_na_1000x.dat");
-    df.add_field("individual").add_field("w0").add_field("w1").add_field("w_noadapt");
-    df.write(get<IND_NAME>(*i)).write(static_cast<double>(ealib::fitness(*i,ea)));
-    
-    put<CA_IC_TYPE>(1,ea);
-    put<CA_SAMPLES>(1000,ea);
-    initialize_fitness_function(ea.fitness_function(), ea);
-    recalculate_fitness(*i,ea);
-    df.write(static_cast<double>(ealib::fitness(*i,ea)));
-    
-    put<CA_DISABLE_ADAPTATION>(1,ea);
-    recalculate_fitness(*i,ea);
-    df.write(static_cast<double>(ealib::fitness(*i,ea))).endl();
-}
-
-
-//! Callback used to apply noise to the state container.
-template <typename FitnessFunction, typename RandomNumberGenerator>
-struct noise_callback : public FitnessFunction::callback {
-    noise_callback(RandomNumberGenerator& rng, double p, datafile& df) : _rng(rng), _p(p), _df(df) {
-    }
-    
-    virtual bool new_state(typename FitnessFunction::state_container_type& s, int& c) {
-        for(typename FitnessFunction::state_container_type::iterator i=s.begin(); i!=s.end(); ++i) {
-            if(_rng.p(_p)) {
-                (*i) ^= 0x01;
-            }
-        }
-        return false;
-    }
-    
-    RandomNumberGenerator& _rng;
-    double _p;
-    datafile& _df;
-};
-
-//! Analysis tool to apply noise to state machine inputs.
-LIBEA_ANALYSIS_TOOL(ca_noise) {
-    // get the dominant:
-    typename EA::iterator ind=analysis::dominant(ea);
-    
-    put<CA_IC_TYPE>(1,ea);
-    put<CA_SAMPLES>(100,ea);
-    initialize_fitness_function(ea.fitness_function(), ea);
-    
-    datafile df("ca_noise.dat");
-    df.add_field("noise_p").add_field("w");
-    df.comment("individual: " + boost::lexical_cast<std::string>(get<IND_NAME>(*ind)));
-    
-    for(double noise=0.0; noise <= 1.0; noise += 0.02) {
-        noise_callback<typename EA::fitness_function_type, typename EA::rng_type> cb(ea.rng(), noise, df);
-        ea.fitness_function().reset_callback(&cb);
-        recalculate_fitness(*ind,ea);
-        df.write(noise).write(static_cast<double>(ealib::fitness(*ind,ea))).endl();
-    }
-}
 
 LIBEA_ANALYSIS_TOOL(ca_dom_rule_density) {
-    // get the dominant:
     typename EA::iterator i=analysis::dominant(ea);
     
     datafile df("ca_dom_rule_density.dat");
@@ -205,7 +127,6 @@ LIBEA_ANALYSIS_TOOL(ca_dom_rule_density) {
 
 
 LIBEA_ANALYSIS_TOOL(ca_dom_sampled_rule_density) {
-    // get the dominant:
     typename EA::iterator i=analysis::dominant(ea);
     
     datafile df("ca_dom_sampled_rule_density.dat");
@@ -250,14 +171,30 @@ struct movie_callback : public FitnessFunction::callback {
 LIBEA_ANALYSIS_TOOL(ca_movie) {
     typename EA::iterator ind=analysis::dominant(ea);
     
-    put<CA_IC_TYPE>(1,ea);
     put<CA_SAMPLES>(1,ea);
     
+    double m = get<CA_M>(ea);
+    double n = get<CA_N>(ea);
+    double p = get<CA_P>(ea);
+    
+    if(m > 1) {
+        m *= get<CA_SCALE>(ea,1);
+    }
+    if(n > 1) {
+        n *= get<CA_SCALE>(ea,1);
+    }
+    if(p > 1) {
+        p *= get<CA_SCALE>(ea,1);
+    }
+    put<CA_M>(m,ea);
+    put<CA_N>(n,ea);
+    put<CA_P>(p,ea);
+
     datafile summary("ca_movie_summary.dat");
     summary.add_field("movie").add_field("w").add_field("c");
     summary.comment("individual: " + boost::lexical_cast<std::string>(get<IND_NAME>(*ind)));
     
-    for(int i=0; i<10; ++i) {
+    for(int i=0; i<100; ++i) {
         initialize_fitness_function(ea.fitness_function(), ea);
         
         datafile df("ca_movie_" + boost::lexical_cast<std::string>(i) + ".dat");
@@ -270,56 +207,6 @@ LIBEA_ANALYSIS_TOOL(ca_movie) {
         df.write(get<CA_M>(ea,1)).write(get<CA_N>(ea)).write(get<CA_P>(ea,1)).endl();
         
         movie_callback<typename EA::fitness_function_type> cb(df);
-        ea.fitness_function().reset_callback(&cb);
-        recalculate_fitness(*ind,ea);
-        summary.write(i).write(static_cast<double>(ealib::fitness(*ind,ea))).write(ea.fitness_function()._C[0]).endl();
-    }
-}
-
-//! Callback used to record a frame for a movie and trigger adaptation.
-template <typename FitnessFunction>
-struct adaptive_movie_callback : public FitnessFunction::callback {
-    adaptive_movie_callback(datafile& df) : _df(df), _t(0) {
-    }
-    
-    virtual bool new_state(typename FitnessFunction::state_container_type& s, int& c) {
-        _df.write_all(s.begin(), s.end()).endl();
-        if(_t++==2) {// && (std::count(s.begin(), s.end(), c) > (0.8 * s.size()))) {
-            c ^= 0x01;
-//            _t = true;
-            return true;
-        }
-        return false;
-    }
-    
-    datafile& _df;
-    int _t;
-};
-
-//! Analysis tool to generate a movie showing adaptation.
-LIBEA_ANALYSIS_TOOL(ca_adaptive_movie) {
-    typename EA::iterator ind=analysis::dominant(ea);
-    
-    put<CA_IC_TYPE>(1,ea);
-    put<CA_SAMPLES>(1,ea);
-    
-    datafile summary("ca_adaptive_movie_summary.dat");
-    summary.add_field("movie").add_field("w").add_field("c");
-    summary.comment("individual: " + boost::lexical_cast<std::string>(get<IND_NAME>(*ind)));
-    
-    for(int i=0; i<10; ++i) {
-        initialize_fitness_function(ea.fitness_function(), ea);
-        
-        datafile df("ca_adaptive_movie_" + boost::lexical_cast<std::string>(i) + ".dat");
-        df.comment("first line holds dimensions of world")
-        .comment("there are always three dimensions, in (m,n,p) order.")
-        .comment("if p == 0, then we're dealing with a 2d world")
-        .comment("note that this is matrix notation: m=row, n=col, p=page")
-        .comment("m==y axis, n==x axis, p==z axis")
-        .comment("each subsequent line holds an entire world state in (page-)row-major order");
-        df.write(get<CA_M>(ea,1)).write(get<CA_N>(ea)).write(get<CA_P>(ea,1)).endl();
-        
-        adaptive_movie_callback<typename EA::fitness_function_type> cb(df);
         ea.fitness_function().reset_callback(&cb);
         recalculate_fitness(*ind,ea);
         summary.write(i).write(static_cast<double>(ealib::fitness(*ind,ea))).write(ea.fitness_function()._C[0]).endl();

@@ -6,7 +6,8 @@ loadfonts(quiet=TRUE)
 Sys.setenv(R_GSCMD = "/opt/local/bin/gs")
 source("~/research/src/self-assembly/math/common.R")
 setwd("/Users/dk/research/src/self-assembly/var")
-figpath = "/Users/dk/research/doc/self-assembly/saso2014/figures/"
+#figpath = "/Users/dk/research/doc/self-assembly/saso2014/non-embedded/"
+figpath = "/Users/dk/Dropbox/goldsby-doc/saso2014/non-embedded/"
 
 
 STYLE="draft" # or "final"
@@ -37,10 +38,10 @@ showfig <- function(x) {
 #
 savefig <- function(x, name, width=WIDTH, height=HEIGHT) {
 	f = paste(figpath,name,".pdf",sep="")
-	pdf(file=f, width=width, height=height, family="CM Sans")
+	pdf(file=f, width=width, height=height, family="Helvetica")
 	print(x)
 	dev.off()
-	embed_fonts(f)#, outfile=paste(figpath,name,"-embed.pdf",sep=""))
+#	embed_fonts(f)#, outfile=paste(figpath,name,"-embed.pdf",sep=""))
 }
 
 # Fitness data for the different experiments.
@@ -66,6 +67,10 @@ F_rl_fitness = F_rl_fitness + scale_fill_discrete(breaks=c("008-1d-fsm-rand","00
 showfig(F_rl_fitness)
 savefig(F_rl_fitness, "p-fitness-rl")
 
+x011 = load.files("fitness.dat.gz", "ta0", "011-1d-fsm-switch")
+x012 = load.files("fitness.dat.gz", "ta0", "012-2d-fsm-switch")
+x013 = load.files("fitness.dat.gz", "ta0", "013-3d-fsm-switch")
+
 F_switch_fitness = expr_fitness(rbind(x011, x012, x013))
 F_switch_fitness = F_switch_fitness + scale_fill_discrete(breaks=c("011-1d-fsm-switch","012-2d-fsm-switch","013-3d-fsm-switch"),labels=c("1D","2D","3D")) + scale_color_discrete(breaks=c("011-1d-fsm-switch","012-2d-fsm-switch","013-3d-fsm-switch"),labels=c("1D","2D","3D"))
 showfig(F_switch_fitness)
@@ -75,11 +80,27 @@ savefig(F_switch_fitness, "p-fitness-reevolved")
 #
 #
 D = load.files("ca_dom_1000x")
+D = subset(D, expr=="002-1d-fsm" | expr=="003-2d-fsm" | expr=="004-3d-fsm")
 levels(D$expr) = c("1D", "2D", "3D", "1D-rl", "2D-rl", "3D-rl")
-D$delta_w = D$w1 - D$w0
-d = ggplot(D, aes(x=expr,y=delta_w)) + geom_boxplot() + quick_theme + xlab("") + ylab(expression(paste(Delta, plain(w))))
+# D$delta_w = D$w1 - D$w0
+d = ggplot(D, aes(x=expr,y=w1,fill=expr)) + geom_boxplot() + geom_jitter() + ylim(0,1) + quick_theme + ylab("Fitness (w)") + theme(legend.position="none") + xlab("")
 showfig(d)
-savefig(d, "p-1000x-deltaw")
+savefig(d, "p-1000x-fitness")
+
+# D1 = subset(D,expr=="1D")
+# D1[which.max(D1$w1),]
+# individual     w0    w1                              filename expr treatment trial delta_w
+# 6     494817 0.9918 0.865 .//002-1d-fsm/ta0_14/ca_dom_1000x.dat   1D       ta0    14 -0.1268
+
+# D1 = subset(D,expr=="2D")
+# D1[which.max(D1$w1),]
+# individual     w0    w1                              filename expr treatment trial delta_w
+# 52     498839 0.9955 0.884 .//003-2d-fsm/ta0_29/ca_dom_1000x.dat   2D       ta0    29 -0.1115
+
+# D1 = subset(D,expr=="3D")
+# D1[which.max(D1$w1),]
+# individual     w0    w1                              filename expr treatment trial delta_w
+# 63     333564 0.9918 0.881 .//004-3d-fsm/ta0_11/ca_dom_1000x.dat   3D       ta0    11 -0.1108
 
 # Adaptive data
 #
@@ -90,6 +111,16 @@ levels(A$expr) = c("1D-rl", "2D-rl", "3D-rl")
 a = ggplot(A, aes(expr,delta_w,fill=expr)) + theme(legend.position="none") + labs(x="", y="Fitness delta") + geom_boxplot() + geom_jitter() + ylim(0,1) + quick_theme
 showfig(a)
 savefig(a, "p-adaptive-fitness")
+
+# KO hidden data
+K = load.files("ca_dom_ko_hidden.dat")
+summary(K)
+K$delta_w = K$w1 - K$w0
+levels(K$expr) = c("1D", "2D", "3D")
+k = ggplot(K, aes(x=expr,y=delta_w,fill=expr)) + geom_boxplot() + geom_jitter() + ylim(-1,0) + quick_theme + ylab(expression(paste(Delta, plain(w)))) + theme(legend.position="none") + xlab("")
+
+showfig(k)
+savefig(k, "p-ko-hidden")
 
 
 # Scaling data
@@ -102,6 +133,20 @@ s = ggplot(S, aes(x=factor(scale),y=w,color=expr)) + geom_point() + labs(x="Scal
 showfig(s)
 savefig(s, "p-scaling-fitness", width=12)
 
+# S1 = subset(S, expr=="1D" & scale==9)
+# S1[which.max(S1$w),]
+# scale    w                              filename expr treatment trial
+# 54     9 0.86 .//002-1d-fsm/ta0_14/ca_dom_scale.dat   1D       ta0    14
+
+# S1 = subset(S, expr=="2D" & scale==9)
+# S1[which.max(S1$w),]
+# scale   w                              filename expr treatment trial
+# 441     9 0.9 .//003-2d-fsm/ta0_26/ca_dom_scale.dat   2D       ta0    26
+
+# S1 = subset(S, expr=="3D" & scale==9)
+# S1[which.max(S1$w),]
+# scale    w                              filename expr treatment trial
+# 747     9 0.93 .//004-3d-fsm/ta0_30/ca_dom_scale.dat   3D       ta0    30
 
 # Rule table density data
 #

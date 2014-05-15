@@ -64,8 +64,12 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "-l checkpoint-10000.xml.gz --analyze ca_dom_ko_hidden"
+            argument = "-l checkpoint-10000.xml.gz --analyze ca_dom_ko_input"
             isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "-l checkpoint-10000.xml.gz --analyze ca_movie --override --self_assembly.ca.scale=9"
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>

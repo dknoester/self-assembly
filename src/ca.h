@@ -53,6 +53,7 @@ LIBEA_MD_DECL(CA_DIRECTION, "self_assembly.ca.direction", int);
 LIBEA_MD_DECL(CA_DISABLE_ADAPTATION, "self_assembly.ca.disable_adaptation", int);
 LIBEA_MD_DECL(CA_UPDATE_N, "self_assembly.ca.update.n", int);
 LIBEA_MD_DECL(CA_KO_HIDDEN, "self_assembly.ca.ko_hidden", int);
+LIBEA_MD_DECL(CA_KO_INPUT, "self_assembly.ca.ko_input", int);
 
 #include "analysis.h"
 
@@ -89,16 +90,12 @@ public:
     //! Define tools here.
     virtual void gather_tools() {
         add_tool<ca_dom_1000x>(this);
-        add_tool<ca_dom_na_1000x>(this);
         add_tool<ca_dom_scale>(this);
-        add_tool<ca_dom_adapt>(this);
         add_tool<ca_dom_rule_density>(this);
         add_tool<ca_dom_sampled_rule_density>(this);
         add_tool<ca_dom_ko_hidden>(this);
-        add_tool<ca_all_100x>(this);
-        add_tool<ca_noise>(this);
+        add_tool<ca_dom_ko_input>(this);
         add_tool<ca_movie>(this);
-        add_tool<ca_adaptive_movie>(this);
         add_tool<ealib::mkv::dominant_reduced_graph>(this);
     }
     

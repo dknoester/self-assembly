@@ -64,12 +64,16 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "-l checkpoint-10000.xml.gz --analyze ca_movie --override --self_assembly.ca.scale=4"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "-l checkpoint-10000.xml.gz --analyze ca_adaptive_movie"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-l checkpoint-10000.xml.gz --analyze ca_dom_sampled_rule_density"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <AdditionalOptions>
