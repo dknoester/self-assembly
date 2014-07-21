@@ -27,15 +27,15 @@
 
 #include <ea/cmdline_interface.h>
 #include <ea/datafiles/fitness.h>
-#include <ea/meta_data.h>
+#include <ea/metadata.h>
 #include <ea/line_of_descent.h>
-#include <ea/mkv/markov_evolution_algorithm.h>
+#include <mkv/markov_evolution_algorithm.h>
 #include <ea/generational_models/moran_process.h>
 #include <ea/selection/rank.h>
 #include <ea/selection/random.h>
-#include <ea/cvector.h>
+#include <ea/data_structures/circular_vector.h>
 #include <ea/torus.h>
-#include <ea/mkv/analysis.h>
+#include <mkv/analysis.h>
 #include <delay.h>
 using namespace ealib;
 

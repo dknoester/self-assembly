@@ -26,11 +26,11 @@
 #include <ea/selection/rank.h>
 #include <ea/selection/random.h>
 #include <ea/selection/proportionate.h>
-#include <ea/representations/bitstring.h>
+#include <ea/genome_types/bitstring.h>
 #include <ea/fitness_functions/all_ones.h>
 #include <ea/cmdline_interface.h>
 #include <ea/datafiles/fitness.h>
-#include <ea/cvector.h>
+#include <ea/data_structures/circular_vector.h>
 using namespace ealib;
 
 #include "ca.h"

@@ -17,11 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <ea/mkv/markov_evolution_algorithm.h>
+#include <mkv/markov_evolution_algorithm.h>
 #include <ea/generational_models/moran_process.h>
 #include <ea/selection/rank.h>
 #include <ea/selection/random.h>
-#include <ea/cvector.h>
+#include <ea/data_structures/circular_vector.h>
 #include <delay.h>
 using namespace ealib;
 

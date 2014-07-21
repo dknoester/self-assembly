@@ -28,7 +28,7 @@
 #include <ea/algorithm.h>
 #include <ea/analysis.h>
 #include <ea/analysis/dominant.h>
-#include <ea/mkv/analysis.h>
+#include <mkv/analysis.h>
 #include "ca.h"
 
 LIBEA_ANALYSIS_TOOL(ca_dom_1000x) {
