@@ -10,22 +10,22 @@
 *.lai
 *.la
 *.a
-.DS_Store
-bin
-libea/bin
-tmp
-DerivedData
-build
-dist
-var
-*.aux
-*.log
-*.out
-*.synctex.gz
-*.bbl
-*.blg
-*.toc
-*(Autosaved)*
-*main.pdf
+*.js
+*.map
+
+# ignore tmp/build directories
 *.swp
-.Rhistory
+tmp
+bin
+dist
+DerivedData
+
+# ignore os x / xcode metadata:
+.DS_Store
+xcuserdata
+**/*.xccheckout
+
+# ignore output from ealib and experimental data:
+checkpoint-*
+*.dat
+var
