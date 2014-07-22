@@ -191,11 +191,12 @@ struct ga_cellular_automata : fitness_function<unary_fitness<double>, constantS,
  parameters.
  */
 typedef evolutionary_algorithm
-< individual<bitstring, ga_cellular_automata>
-, ancestors::flat_bitstring
+< direct<bitstring>
+, ga_cellular_automata
 , mutation::operators::per_site<mutation::site::bitflip>
 , recombination::single_point_crossover
 , generational_models::steady_state<selection::random<with_replacementS>, selection::rank>
+, ancestors::flat_bitstring
 > ea_type;
 
 

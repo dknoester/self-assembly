@@ -29,7 +29,7 @@
 #include <ea/datafiles/fitness.h>
 #include <ea/metadata.h>
 #include <ea/line_of_descent.h>
-#include <mkv/markov_evolution_algorithm.h>
+#include <ea/mkv/markov_network_evolution.h>
 #include <ea/generational_models/moran_process.h>
 #include <ea/selection/rank.h>
 #include <ea/selection/random.h>
